@@ -174,6 +174,59 @@
         </div>
 
         <div
+          class="card-masonry relative break-inside-avoid bg-white border border-slate-200 p-6 mb-4"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <i data-lucide="calendar" size="18" class="text-slate-500"></i>
+              <span id="calendar-month" class="font-bold text-sm"
+                >Month Year</span
+              >
+            </div>
+            <div class="flex gap-2">
+              <button
+                onclick="changeMonth(-1)"
+                class="p-1 hover:bg-slate-100 rounded-full"
+              >
+                <i data-lucide="chevron-left" size="16"></i>
+              </button>
+              <button
+                onclick="changeMonth(1)"
+                class="p-1 hover:bg-slate-100 rounded-full"
+              >
+                <i data-lucide="chevron-right" size="16"></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 mb-2"
+          >
+            <div>SUN</div>
+            <div>MON</div>
+            <div>TUE</div>
+            <div>WED</div>
+            <div>THU</div>
+            <div>FRI</div>
+            <div>SAT</div>
+          </div>
+
+          <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+
+          <div
+            id="event-preview"
+            class="mt-4 pt-4 border-t border-slate-100 hidden"
+          >
+            <h4
+              class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+            >
+              Events
+            </h4>
+            <ul id="event-list" class="space-y-2 text-sm"></ul>
+          </div>
+        </div>
+
+        <div
           class="card-masonry relative group break-inside-avoid bg-[#efefef] p-6 mb-4"
         >
           <div class="flex justify-between items-center mb-4 pr-2">
@@ -221,11 +274,17 @@
         </div>
 
         <div class="card-masonry break-inside-avoid bg-[#ffe0e0] p-8 mb-4">
-          <p class="text-2xl font-serif italic text-[#e60023] mb-4">
-            "The best way to get started is to quit talking and begin doing."
+          <p
+            id="daily-quote"
+            class="text-2xl font-serif italic text-[#e60023] mb-4"
+          >
+            "Loading daily inspiration..."
           </p>
-          <p class="text-xs font-bold uppercase text-[#e60023]/60">
-            — Walt Disney
+          <p
+            id="daily-author"
+            class="text-xs font-bold uppercase text-[#e60023]/60"
+          >
+            — Please wait
           </p>
         </div>
 
@@ -265,6 +324,121 @@
           .toString()
           .padStart(2, '0')}`
       }
+
+      // --- CALENDAR LOGIC ---
+      let currentMonth = new Date()
+      let events = JSON.parse(localStorage.getItem('focus_events')) || {}
+
+      // Example static festivals (You can expand this or connect to an API)
+      const festivals = {
+        '1-1': "New Year's Day",
+        '2-14': "Valentine's Day",
+        '10-31': 'Halloween',
+        '12-25': 'Christmas',
+        '3-17': "St. Patrick's Day"
+      }
+
+      function renderCalendar() {
+        const grid = document.getElementById('calendar-grid')
+        const monthYear = document.getElementById('calendar-month')
+        grid.innerHTML = ''
+
+        const year = currentMonth.getFullYear()
+        const month = currentMonth.getMonth()
+
+        monthYear.innerText = currentMonth.toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric'
+        })
+
+        const firstDay = new Date(year, month, 1).getDay()
+        const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+        // Padding for empty days
+        for (let i = 0; i < firstDay; i++) {
+          grid.innerHTML += `<div class="h-8"></div>`
+        }
+
+        // Actual days
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateKey = `${month + 1}-${day}`
+          const fullDateKey = `${year}-${month + 1}-${day}`
+          const isToday =
+            new Date().toDateString() ===
+            new Date(year, month, day).toDateString()
+          const hasEvent = events[fullDateKey] || festivals[dateKey]
+
+          grid.innerHTML += `
+            <div onclick="handleDayClick(${day})" class="h-8 flex flex-col items-center justify-center rounded-lg cursor-pointer transition-colors relative
+                ${
+                  isToday
+                    ? 'bg-black text-white'
+                    : 'hover:bg-slate-100 text-slate-700 font-medium'
+                }">
+                <span class="text-xs">${day}</span>
+                ${
+                  hasEvent
+                    ? '<div class="w-1 h-1 bg-red-500 rounded-full absolute bottom-1"></div>'
+                    : ''
+                }
+            </div>
+        `
+        }
+        lucide.createIcons()
+      }
+
+      function handleDayClick(day) {
+        const year = currentMonth.getFullYear()
+        const month = currentMonth.getMonth()
+        const dateKey = `${month + 1}-${day}`
+        const fullDateKey = `${year}-${month + 1}-${day}`
+
+        const eventName = prompt(
+          `Add event for ${currentMonth.toLocaleString('default', {
+            month: 'short'
+          })} ${day}:`
+        )
+
+        if (eventName) {
+          if (!events[fullDateKey]) events[fullDateKey] = []
+          events[fullDateKey].push(eventName)
+          localStorage.setItem('focus_events', JSON.stringify(events))
+          renderCalendar()
+          showEvents(fullDateKey, dateKey)
+        } else {
+          showEvents(fullDateKey, dateKey)
+        }
+      }
+
+      function showEvents(fullKey, festKey) {
+        const container = document.getElementById('event-preview')
+        const list = document.getElementById('event-list')
+        list.innerHTML = ''
+
+        const dayEvents = events[fullKey] || []
+        const festival = festivals[festKey]
+
+        if (festival) {
+          list.innerHTML += `<li class="text-red-500 font-bold">🎉 ${festival}</li>`
+        }
+
+        dayEvents.forEach(e => {
+          list.innerHTML += `<li class="text-slate-600 flex items-center gap-2"><div class="w-1.5 h-1.5 bg-slate-400 rounded-full"></div> ${e}</li>`
+        })
+
+        container.classList.toggle(
+          'hidden',
+          !festival && dayEvents.length === 0
+        )
+      }
+
+      function changeMonth(dir) {
+        currentMonth.setMonth(currentMonth.getMonth() + dir)
+        renderCalendar()
+      }
+
+      // Initialize
+      renderCalendar()
 
       function toggleTimer() {
         const btn = document.getElementById('timer-btn')
@@ -375,6 +549,36 @@
         lucide.createIcons()
         localStorage.setItem('pin_workspace_todos', JSON.stringify(todos))
       }
+
+      // Daily quotes
+
+      async function fetchDailyQuote() {
+        const quoteEl = document.getElementById('daily-quote')
+        const authorEl = document.getElementById('daily-author')
+
+        try {
+          // Using a proxy or a direct fetch to ZenQuotes 'today' endpoint
+          // ZenQuotes provides a 'today' quote that only changes once every 24 hours
+          const response = await fetch(
+            'https://api.allorigins.win/get?url=' +
+              encodeURIComponent('https://zenquotes.io/api/today')
+          )
+          const data = await response.json()
+          const quoteData = JSON.parse(data.contents)[0]
+
+          quoteEl.innerText = `"${quoteData.q}"`
+          authorEl.innerText = `— ${quoteData.a}`
+        } catch (error) {
+          console.error('Error fetching quote:', error)
+          // Fallback if the API is down
+          quoteEl.innerText =
+            'The best way to get started is to quit talking and begin doing.'
+          authorEl.innerText = '— Walt Disney'
+        }
+      }
+
+      // Call the function on load
+      fetchDailyQuote()
 
       function addTodo() {
         const val = prompt('What needs to be done?')
