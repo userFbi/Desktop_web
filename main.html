@@ -88,6 +88,25 @@
         position: relative;
         transition: all 0.4s ease;
       }
+
+      #weather-card {
+        background: rgba(85, 85, 107, 0.711) !important;
+      }
+
+      /* Custom scrollbar for the todo list */
+      #todo-list-container::-webkit-scrollbar {
+        width: 4px;
+      }
+      #todo-list-container::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      #todo-list-container::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 10px;
+      }
+      #todo-list-container::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+      }
     </style>
   </head>
   <body class="bg-white text-black">
@@ -307,10 +326,16 @@
               <i data-lucide="plus-circle" size="24"></i>
             </button>
           </div>
-          <ul id="todo-list" class="space-y-3"></ul>
+
+          <div
+            id="todo-list-container"
+            class="max-h-[260px] overflow-y-auto pr-2"
+          >
+            <ul id="todo-list" class="space-y-3"></ul>
+          </div>
         </div>
 
-        <div class="card-masonry relative group break-inside-avoid mb-4">
+        <div class="card-masonry relative group break-inside-avoid mb-4" >
           <img src="download (2).jpg" class="w-full h-auto" />
           <div
             class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4"
@@ -371,6 +396,50 @@
           </div>
           <div id="clock-date" class="mt-2 text-sm font-medium text-slate-500">
             Monday, Feb 23
+          </div>
+        </div>
+        <div
+          class="card-masonry relative break-inside-avoid bg-white border border-slate-200 p-6 mb-4"
+        >
+          <h3
+            class="font-bold text-sm mb-4 text-slate-400 uppercase tracking-widest"
+          >
+            Quick Access
+          </h3>
+          <div class="grid grid-cols-3 gap-4">
+            <a
+              href="https://github.com"
+              target="_blank"
+              class="flex flex-col items-center gap-2 hover:scale-110 transition"
+            >
+              <div
+                class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center"
+              >
+                <i data-lucide="github" size="20"></i>
+              </div>
+            </a>
+            <a
+              href="https://google.com"
+              target="_blank"
+              class="flex flex-col items-center gap-2 hover:scale-110 transition"
+            >
+              <div
+                class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center"
+              >
+                <i data-lucide="search" size="20"></i>
+              </div>
+            </a>
+            <a
+              href="https://mail.google.com"
+              target="_blank"
+              class="flex flex-col items-center gap-2 hover:scale-110 transition"
+            >
+              <div
+                class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center"
+              >
+                <i data-lucide="mail" size="20"></i>
+              </div>
+            </a>
           </div>
         </div>
       </section>
