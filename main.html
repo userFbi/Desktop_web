@@ -90,7 +90,7 @@
       }
 
       #weather-card {
-        background: rgba(85, 85, 107, 0.711) !important;
+        background: #d1cdcd !important;
       }
 
       /* Custom scrollbar for the todo list */
@@ -106,6 +106,15 @@
       }
       #todo-list-container::-webkit-scrollbar-thumb:hover {
         background: #9ca3af;
+      }
+
+      .habit-card {
+        height: 160px;
+        width: 600px;
+      }
+
+      .notes-card {
+        height: 280px;
       }
     </style>
   </head>
@@ -335,8 +344,51 @@
           </div>
         </div>
 
-        <div class="card-masonry relative group break-inside-avoid mb-4" >
-          <img src="download (2).jpg" class="w-full h-auto" />
+        <div
+          class="habit-card card-masonry break-inside-avoid bg-white border border-slate-200 p-5 mb-4 shadow-sm"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <span
+              class="text-[10px] font-black uppercase tracking-widest text-slate-400"
+              >Daily Habits</span
+            >
+            <button
+              onclick="addHabit()"
+              class="text-slate-400 hover:text-black transition"
+            >
+              <i data-lucide="plus" size="14"></i>
+            </button>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between items-end mb-1">
+              <span id="habit-percent" class="text-2xl font-black text-black"
+                >0%</span
+              >
+              <span
+                id="habit-stats"
+                class="text-[10px] font-bold text-slate-400"
+                >0/0</span
+              >
+            </div>
+            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                id="habit-progress-bar"
+                class="h-full bg-black transition-all duration-500"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <div
+            id="habit-list"
+            class="flex gap-2 overflow-x-auto pb-2 no-scrollbar"
+            style="scrollbar-width: none; -ms-overflow-style: none"
+          ></div>
+        </div>
+
+        <div class="card-masonry relative group break-inside-avoid mb-4">
+          <img src="final-edited.jpg" class="w-full h-auto" />
           <div
             class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4"
           >
@@ -347,7 +399,7 @@
         </div>
 
         <div
-          class="card-masonry relative break-inside-avoid bg-white border border-slate-200 p-6 mb-4"
+          class="notes-card card-masonry relative break-inside-avoid bg-white border border-slate-200 p-6 mb-4"
         >
           <div class="flex items-center gap-2 mb-4">
             <div
@@ -446,6 +498,69 @@
     </main>
 
     <script>
+      // --- HABIT TRACKER LOGIC ---
+      let habits = JSON.parse(localStorage.getItem('focus_habits')) || [
+        { text: 'Water', done: false },
+        { text: 'Read', done: true },
+        { text: 'Walk', done: false }
+      ]
+
+      function renderHabits() {
+        const list = document.getElementById('habit-list')
+        if (!list) return
+
+        list.innerHTML = habits
+          .map(
+            (h, i) => `
+    <div onclick="toggleHabit(${i})" 
+         class="flex-shrink-0 cursor-pointer px-3 py-2 rounded-xl border transition-all duration-200 flex items-center gap-2
+         ${
+           h.done
+             ? 'bg-black border-black text-white'
+             : 'bg-slate-50 border-slate-100 text-slate-600 hover:border-slate-300'
+         }">
+      <span class="text-xs font-bold whitespace-nowrap">${h.text}</span>
+      ${h.done ? '<i data-lucide="check" size="12"></i>' : ''}
+    </div>
+  `
+          )
+          .join('')
+
+        updateHabitStats()
+        lucide.createIcons()
+        localStorage.setItem('focus_habits', JSON.stringify(habits))
+      }
+
+      function updateHabitStats() {
+        const total = habits.length
+        const completed = habits.filter(h => h.done).length
+        const percentage =
+          total === 0 ? 0 : Math.round((completed / total) * 100)
+
+        document.getElementById('habit-percent').innerText = `${percentage}%`
+        document.getElementById(
+          'habit-stats'
+        ).innerText = `${completed}/${total}`
+        document.getElementById(
+          'habit-progress-bar'
+        ).style.width = `${percentage}%`
+      }
+
+      function toggleHabit(index) {
+        habits[index].done = !habits[index].done
+        renderHabits()
+      }
+
+      function addHabit() {
+        const val = prompt('New habit:')
+        if (val && val.trim()) {
+          habits.push({ text: val.trim(), done: false })
+          renderHabits()
+        }
+      }
+
+      // Call this in your existing DOMContentLoaded listener
+      renderHabits()
       async function updateWeatherAesthetic() {
         const lat = 21.1702
         const lon = 72.8311
