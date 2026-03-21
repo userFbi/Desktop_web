@@ -68,9 +68,220 @@
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background: var(--accent);
       }
+      /* Classes to trigger the slide-in effect */
+      #nav-links.nav-active {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      /* Position links to the right and set the hidden state */
+      #nav-links {
+        position: absolute;
+        right: 60px; /* Moves it just to the left of the toggle button */
+        display: flex;
+        transform: translateX(40px); /* Starts 'inside' the button area */
+        opacity: 0;
+        pointer-events: none;
+        filter: blur(8px);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* The active state when menu is clicked */
+      #nav-links.nav-active {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+        filter: blur(0);
+      }
+
+      section {
+        animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+
+      /* Staggered animation for the milestones */
+      .relative.pl-8 {
+        animation: fadeInRight 0.5s ease forwards;
+        opacity: 0;
+      }
+
+      .relative.pl-8:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .relative.pl-8:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .relative.pl-8:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Tooltip style for heatmap */
+      .aspect-square {
+        cursor: pointer;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          height: 10px;
+          opacity: 0.5;
+        }
+        50% {
+          height: 25px;
+          opacity: 1;
+        }
+      }
+
+      #scratchpad::placeholder {
+        color: #333;
+        font-style: italic;
+      }
+
+      /* Make the player look like it's glowing slightly */
+      .premium-card:hover {
+        box-shadow: 0 10px 40px -10px rgba(179, 165, 119, 0.05);
+      }
+
+      /* Progress Bar Glow */
+      .shadow-\[0_0_10_#b3a57766\] {
+        box-shadow: 0 0 12px rgba(179, 165, 119, 0.4);
+      }
+
+      /* Quick Action Button Hover */
+      .group:hover i {
+        transform: translateY(-2px);
+      }
+
+      /* Section Fade-in delay */
+      section:last-of-type {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Glassmorphism for the Floating Dock */
+      .fixed.bottom-8 {
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Hover glow for Project Gallery images */
+      .group:hover {
+        box-shadow: 0 0 30px rgba(179, 165, 119, 0.1);
+      }
+
+      /* Add padding to the bottom so content isn't hidden by the dock */
+      body {
+        padding-bottom: 120px;
+      }
+
+      #terminal-body {
+        background-image: linear-gradient(
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          ),
+          linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
+          );
+        background-size: 100% 2px, 3px 100%;
+      }
+
+      #terminal-body div {
+        animation: typing 0.2s steps(20, end);
+      }
+
+      @keyframes typing {
+        from {
+          opacity: 0;
+          transform: translateX(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      #breath-circle {
+        transition: transform 4s ease-in-out, background-color 4s ease-in-out;
+      }
+
+      #breather {
+        filter: drop-shadow(0 0 20px rgba(179, 165, 119, 0.1));
+      }
+
+      /* Add a subtle scanline effect to the entire Zen mode */
+      #zen-overlay::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          rgba(18, 16, 16, 0) 50%,
+          rgba(0, 0, 0, 0.05) 50%
+        );
+        background-size: 100% 4px;
+        z-index: 106;
+        pointer-events: none;
+      }
+
+      #command-palette {
+    transition: opacity 0.2s ease;
+}
+
+#palette-modal {
+    box-shadow: 0 0 100px rgba(0,0,0,0.8), 0 0 40px rgba(179, 165, 119, 0.05);
+}
+
+/* Text Selection Color to match your Surat Gold theme */
+::selection {
+    background: rgba(179, 165, 119, 0.3);
+    color: white;
+}
+
+/* Subtle border animation for the active task */
+#todo-list li:first-child {
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+}
     </style>
   </head>
   <body class="p-6 md:p-12">
+    <div
+      class="fixed top-0 left-0 w-full h-10 bg-black/40 backdrop-blur-md border-b border-white/5 z-[100] flex items-center justify-between px-6 text-[9px] font-mono tracking-[0.2em] text-zinc-500"
+    >
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5"
+          ><span
+            class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+          ></span>
+          SYSTEM ONLINE</span
+        >
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="live-clock">00:00:00</span>
+        <span class="text-[#b3a577]">SURAT, IN</span>
+      </div>
+    </div>
     <nav
       id="main-nav"
       class="flex justify-between items-center max-w-6xl mx-auto mb-16 relative"
@@ -79,7 +290,7 @@
 
       <div
         id="nav-links"
-        class="hidden flex items-center gap-8 font-bold text-xs tracking-widest uppercase"
+        class="items-center gap-8 font-bold text-xs tracking-widest uppercase"
       >
         <a href="#" class="text-white hover:text-[#b3a577] transition">Home</a>
         <a href="#" class="text-zinc-500 hover:text-white transition">About</a>
@@ -92,11 +303,11 @@
 
       <div
         id="menu-toggle"
-        class="cursor-pointer group relative w-8 h-8 flex items-center justify-center"
+        class="z-50 cursor-pointer group relative w-8 h-8 flex items-center justify-center"
       >
         <div
           id="icon-bars"
-          class="absolute inset-0 flex flex-col items-end justify-center gap-1.5 transition-all duration-200"
+          class="absolute inset-0 flex flex-col items-end justify-center gap-1.5 transition-all duration-300"
         >
           <div
             class="w-8 h-1 bg-white rounded-full transition-all group-hover:w-5"
@@ -105,9 +316,10 @@
             class="w-5 h-1 bg-zinc-600 rounded-full transition-all group-hover:w-8"
           ></div>
         </div>
+
         <div
           id="icon-close"
-          class="absolute opacity-0 scale-75 rotate-[-45deg] transition-all duration-200 text-[#b3a577] pointer-events-none"
+          class="absolute opacity-0 scale-75 rotate-[-45deg] transition-all duration-300 text-[#b3a577] pointer-events-none"
         >
           <i data-lucide="x" class="w-8 h-8"></i>
         </div>
@@ -213,10 +425,864 @@
           ></ul>
         </div>
       </div>
+
+      <section class="lg:col-span-12 mt-12">
+        <div class="flex items-center justify-between mb-8">
+          <h3 class="text-2xl font-bold tracking-tight">
+            Performance <span class="heading">Insights</span>
+          </h3>
+          <div
+            class="text-[10px] font-bold tracking-widest uppercase text-zinc-600"
+          >
+            Last 7 Days
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            class="premium-card p-8 flex flex-col gap-4 group hover:border-[#b3a577]/30"
+          >
+            <div class="flex justify-between items-start">
+              <div
+                class="p-3 bg-zinc-900 rounded-2xl group-hover:bg-[#b3a577]/10 transition"
+              >
+                <i data-lucide="zap" class="w-6 h-6 text-[#b3a577]"></i>
+              </div>
+              <span class="text-xs font-bold text-green-500">+12%</span>
+            </div>
+            <div>
+              <p class="text-4xl font-light tracking-tighter">18.5h</p>
+              <p class="text-zinc-500 text-xs uppercase tracking-widest mt-1">
+                Deep Work Time
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="premium-card p-8 flex flex-col gap-4 group hover:border-[#b3a577]/30"
+          >
+            <div class="flex justify-between items-start">
+              <div
+                class="p-3 bg-zinc-900 rounded-2xl group-hover:bg-[#b3a577]/10 transition"
+              >
+                <i
+                  data-lucide="check-circle"
+                  class="w-6 h-6 text-[#b3a577]"
+                ></i>
+              </div>
+              <span class="text-xs font-bold text-zinc-600">Avg. 8/day</span>
+            </div>
+            <div>
+              <p class="text-4xl font-light tracking-tighter">42</p>
+              <p class="text-zinc-500 text-xs uppercase tracking-widest mt-1">
+                Tasks Completed
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="premium-card p-8 flex flex-col gap-4 group hover:border-[#b3a577]/30"
+          >
+            <div class="flex justify-between items-start">
+              <div
+                class="p-3 bg-zinc-900 rounded-2xl group-hover:bg-[#b3a577]/10 transition"
+              >
+                <i data-lucide="target" class="w-6 h-6 text-[#b3a577]"></i>
+              </div>
+              <span class="text-xs font-bold text-[#b3a577]">94%</span>
+            </div>
+            <div>
+              <p class="text-4xl font-light tracking-tighter">82%</p>
+              <p class="text-zinc-500 text-xs uppercase tracking-widest mt-1">
+                Focus Score
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="lg:col-span-12 mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
+        <div class="lg:col-span-2 premium-card p-8 group">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-bold">
+              Consistency <span class="heading">Map</span>
+            </h3>
+            <div class="flex gap-1">
+              <div class="w-2 h-2 rounded-sm bg-zinc-800"></div>
+              <div class="w-2 h-2 rounded-sm bg-[#b3a577]/40"></div>
+              <div class="w-2 h-2 rounded-sm bg-[#b3a577]"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 md:grid-cols-14 gap-2">
+            <div
+              class="aspect-square bg-[#b3a577] rounded-sm transition-all hover:scale-110"
+              title="Completed"
+            ></div>
+            <div class="aspect-square bg-zinc-900 rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577]/60 rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577] rounded-sm"></div>
+            <div class="aspect-square bg-zinc-900 rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577]/20 rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577] rounded-sm"></div>
+            <div class="aspect-square bg-zinc-900 rounded-sm"></div>
+            <div class="aspect-square bg-zinc-900 rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577] rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577]/40 rounded-sm"></div>
+            <div class="aspect-square bg-zinc-900 rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577] rounded-sm"></div>
+            <div class="aspect-square bg-[#b3a577] rounded-sm"></div>
+          </div>
+          <p class="text-[10px] text-zinc-600 uppercase mt-4 tracking-widest">
+            Current Streak: 12 Days
+          </p>
+        </div>
+
+        <div class="premium-card p-8">
+          <h3 class="text-lg font-bold mb-6">
+            Latest <span class="heading">Bits</span>
+          </h3>
+          <div
+            class="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-zinc-800"
+          >
+            <div class="relative pl-8">
+              <div
+                class="absolute left-0 top-1 w-6 h-6 bg-zinc-900 border border-zinc-800 rounded-full flex items-center justify-center"
+              >
+                <div class="w-2 h-2 bg-[#b3a577] rounded-full"></div>
+              </div>
+              <p class="text-xs font-bold">FocusOS v2.0</p>
+              <p class="text-[10px] text-zinc-500">Shipped Dark Mode UI</p>
+            </div>
+
+            <div class="relative pl-8">
+              <div
+                class="absolute left-0 top-1 w-6 h-6 bg-zinc-900 border border-zinc-800 rounded-full flex items-center justify-center"
+              >
+                <div class="w-2 h-2 bg-zinc-700 rounded-full"></div>
+              </div>
+              <p class="text-xs font-bold text-zinc-400">Node.js API</p>
+              <p class="text-[10px] text-zinc-500">Integrating Weather Sync</p>
+            </div>
+
+            <div class="relative pl-8">
+              <div
+                class="absolute left-0 top-1 w-6 h-6 bg-zinc-900 border border-zinc-800 rounded-full flex items-center justify-center"
+              >
+                <div class="w-2 h-2 bg-zinc-700 rounded-full"></div>
+              </div>
+              <p class="text-xs font-bold text-zinc-400">Portfolio Pixels</p>
+              <p class="text-[10px] text-zinc-500">Curating 2026 gallery</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="lg:col-span-12 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6"
+      >
+        <div
+          class="lg:col-span-5 premium-card p-8 flex flex-col justify-between min-h-[280px] bg-gradient-to-br from-[#141414] to-[#1a1a1a]"
+        >
+          <div class="flex justify-between items-start">
+            <div
+              class="w-20 h-20 rounded-2xl bg-zinc-800 overflow-hidden shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=2070&auto=format&fit=crop"
+                class="w-full h-full object-cover opacity-60"
+              />
+            </div>
+            <div class="text-right">
+              <span
+                class="text-[10px] font-bold text-[#b3a577] uppercase tracking-[0.2em]"
+                >Now Playing</span
+              >
+              <h4 class="text-sm font-bold mt-1">Lo-fi Chill Beats</h4>
+              <p class="text-[10px] text-zinc-500">Focus Station FM</p>
+            </div>
+          </div>
+
+          <div class="flex items-end gap-1 h-8 mb-4">
+            <div class="w-1 bg-[#b3a577] h-4 animate-[pulse_1s_infinite]"></div>
+            <div
+              class="w-1 bg-[#b3a577] h-8 animate-[pulse_1.2s_infinite]"
+            ></div>
+            <div class="w-1 bg-zinc-700 h-5"></div>
+            <div
+              class="w-1 bg-[#b3a577] h-7 animate-[pulse_0.8s_infinite]"
+            ></div>
+            <div class="w-1 bg-zinc-700 h-3"></div>
+            <div
+              class="w-1 bg-[#b3a577] h-6 animate-[pulse_1.1s_infinite]"
+            ></div>
+          </div>
+
+          <div class="flex items-center justify-between gap-4">
+            <button class="text-zinc-500 hover:text-white transition">
+              <i data-lucide="skip-back" class="w-5 h-5"></i>
+            </button>
+            <button
+              class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg"
+            >
+              <i data-lucide="play" class="w-6 h-6 fill-black"></i>
+            </button>
+            <button class="text-zinc-500 hover:text-white transition">
+              <i data-lucide="skip-forward" class="w-5 h-5"></i>
+            </button>
+            <div class="flex-1 h-1 bg-zinc-800 rounded-full ml-4 relative">
+              <div
+                class="absolute top-0 left-0 h-full w-1/3 bg-[#b3a577] rounded-full"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 premium-card p-8 flex flex-col">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold">
+              Quick <span class="heading">Scratchpad</span>
+            </h3>
+            <button
+              onclick="clearNotes()"
+              class="text-[10px] font-bold text-zinc-600 hover:text-red-400 uppercase tracking-widest transition"
+            >
+              Clear
+            </button>
+          </div>
+          <textarea
+            id="scratchpad"
+            placeholder="Drop a thought, a hex code, or a snippet..."
+            class="w-full h-full min-h-[150px] bg-transparent border-none outline-none text-zinc-400 text-sm leading-relaxed resize-none custom-scrollbar"
+          ></textarea>
+          <div class="flex gap-2 mt-4">
+            <span
+              class="px-2 py-1 bg-zinc-900 border border-zinc-800 rounded text-[9px] text-zinc-500 uppercase"
+              >Auto-saving</span
+            >
+            <span
+              class="px-2 py-1 bg-zinc-900 border border-zinc-800 rounded text-[9px] text-zinc-500 uppercase"
+              >Markdown Ready</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="lg:col-span-12 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6"
+      >
+        <div
+          class="lg:col-span-4 premium-card p-8 flex flex-col justify-between"
+        >
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-bold">
+              System <span class="heading">Load</span>
+            </h3>
+            <i data-lucide="activity" class="w-5 h-5 text-zinc-700"></i>
+          </div>
+
+          <div class="space-y-6">
+            <div>
+              <div
+                class="flex justify-between text-[10px] uppercase tracking-widest mb-2"
+              >
+                <span class="text-zinc-500">Mental Bandwidth</span>
+                <span class="text-[#b3a577]">64%</span>
+              </div>
+              <div
+                class="h-1.5 w-full bg-zinc-900 rounded-full overflow-hidden"
+              >
+                <div
+                  class="h-full bg-[#b3a577] w-[64%] rounded-full shadow-[0_0_10px_#b3a57766]"
+                ></div>
+              </div>
+            </div>
+
+            <div>
+              <div
+                class="flex justify-between text-[10px] uppercase tracking-widest mb-2"
+              >
+                <span class="text-zinc-500">Project Storage</span>
+                <span class="text-zinc-400">82%</span>
+              </div>
+              <div
+                class="h-1.5 w-full bg-zinc-900 rounded-full overflow-hidden"
+              >
+                <div class="h-full bg-zinc-600 w-[82%] rounded-full"></div>
+              </div>
+            </div>
+
+            <div>
+              <div
+                class="flex justify-between text-[10px] uppercase tracking-widest mb-2"
+              >
+                <span class="text-zinc-500">Uptime</span>
+                <span class="text-zinc-400">14:02:05</span>
+              </div>
+              <div
+                class="h-1.5 w-full bg-zinc-900 rounded-full overflow-hidden"
+              >
+                <div
+                  class="h-full bg-zinc-800 w-[40%] rounded-full animate-pulse"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 premium-card p-8">
+          <h3 class="text-lg font-bold mb-8 text-center md:text-left">
+            Terminal <span class="heading">Quick-Keys</span>
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <button
+              class="flex flex-col items-center justify-center gap-3 p-6 bg-zinc-900/50 border border-zinc-800 rounded-[24px] hover:border-[#b3a577]/50 hover:bg-zinc-900 transition-all group"
+            >
+              <i
+                data-lucide="terminal"
+                class="w-6 h-6 text-zinc-500 group-hover:text-[#b3a577] transition"
+              ></i>
+              <span class="text-[10px] font-bold uppercase tracking-widest"
+                >Console</span
+              >
+            </button>
+
+            <button
+              class="flex flex-col items-center justify-center gap-3 p-6 bg-zinc-900/50 border border-zinc-800 rounded-[24px] hover:border-[#b3a577]/50 hover:bg-zinc-900 transition-all group"
+            >
+              <i
+                data-lucide="code-2"
+                class="w-6 h-6 text-zinc-500 group-hover:text-[#b3a577] transition"
+              ></i>
+              <span class="text-[10px] font-bold uppercase tracking-widest"
+                >GitHub</span
+              >
+            </button>
+
+            <button
+              class="flex flex-col items-center justify-center gap-3 p-6 bg-zinc-900/50 border border-zinc-800 rounded-[24px] hover:border-[#b3a577]/50 hover:bg-zinc-900 transition-all group"
+            >
+              <i
+                data-lucide="palette"
+                class="w-6 h-6 text-zinc-500 group-hover:text-[#b3a577] transition"
+              ></i>
+              <span class="text-[10px] font-bold uppercase tracking-widest"
+                >Figma</span
+              >
+            </button>
+
+            <button
+              class="flex flex-col items-center justify-center gap-3 p-6 bg-zinc-900/50 border border-zinc-800 rounded-[24px] hover:border-[#b3a577]/50 hover:bg-zinc-900 transition-all group"
+            >
+              <i
+                data-lucide="layout"
+                class="w-6 h-6 text-zinc-500 group-hover:text-[#b3a577] transition"
+              ></i>
+              <span class="text-[10px] font-bold uppercase tracking-widest"
+                >Vercel</span
+              >
+            </button>
+          </div>
+
+          <div
+            class="mt-8 p-4 bg-zinc-900/30 border border-dashed border-zinc-800 rounded-2xl text-center"
+          >
+            <p
+              class="text-[9px] text-zinc-600 uppercase tracking-widest italic"
+            >
+              "The best way to predict the future is to create it."
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="lg:col-span-12 mt-12">
+        <div class="flex items-center justify-between mb-8">
+          <h3 class="text-2xl font-bold tracking-tight">
+            Recent <span class="heading">Pixels</span>
+          </h3>
+          <a
+            href="#"
+            class="text-xs font-bold text-zinc-600 hover:text-[#b3a577] uppercase tracking-widest transition"
+            >View Archive</a
+          >
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div
+            class="group relative aspect-video rounded-[24px] overflow-hidden border border-zinc-800 bg-zinc-900"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop"
+              class="w-full h-full object-cover opacity-40 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 flex flex-col justify-end translate-y-2 group-hover:translate-y-0 transition-transform"
+            >
+              <p class="text-[10px] font-bold text-[#b3a577] uppercase">
+                Branding
+              </p>
+              <h4 class="text-sm font-bold">Lumina Interface</h4>
+            </div>
+          </div>
+
+          <div
+            class="group relative aspect-video rounded-[24px] overflow-hidden border border-zinc-800 bg-zinc-900"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2070&auto=format&fit=crop"
+              class="w-full h-full object-cover opacity-40 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 flex flex-col justify-end translate-y-2 group-hover:translate-y-0 transition-transform"
+            >
+              <p class="text-[10px] font-bold text-[#b3a577] uppercase">
+                React App
+              </p>
+              <h4 class="text-sm font-bold">FocusOS Core</h4>
+            </div>
+          </div>
+
+          <div
+            class="group relative aspect-video rounded-[24px] overflow-hidden border border-zinc-800 bg-zinc-900"
+          >
+            <div
+              class="w-full h-full flex items-center justify-center border-2 border-dashed border-zinc-800 group-hover:border-[#b3a577]/30 transition-colors"
+            >
+              <i
+                data-lucide="plus"
+                class="w-8 h-8 text-zinc-800 group-hover:text-[#b3a577] transition"
+              ></i>
+            </div>
+          </div>
+
+          <div
+            class="hidden lg:block group relative aspect-video rounded-[24px] overflow-hidden border border-zinc-800 bg-zinc-900/20"
+          ></div>
+        </div>
+      </section>
+
+      <div
+        class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 bg-[#141414]/80 backdrop-blur-xl border border-white/5 rounded-full flex items-center gap-6 shadow-2xl"
+      >
+        <button
+          class="text-white hover:text-[#b3a577] transition-all hover:-translate-y-1"
+        >
+          <i data-lucide="home" class="w-5 h-5"></i>
+        </button>
+        <div class="w-[1px] h-4 bg-zinc-800"></div>
+        <button
+          class="text-zinc-500 hover:text-white transition-all hover:-translate-y-1"
+        >
+          <i data-lucide="layers" class="w-5 h-5"></i>
+        </button>
+        <button
+          class="text-zinc-500 hover:text-white transition-all hover:-translate-y-1"
+        >
+          <i data-lucide="command" class="w-5 h-5"></i>
+        </button>
+        <button
+          class="text-zinc-500 hover:text-white transition-all hover:-translate-y-1"
+        >
+          <i data-lucide="settings" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <section
+        class="lg:col-span-12 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6"
+      >
+        <div
+          class="lg:col-span-7 premium-card bg-black/50 border-zinc-800/50 flex flex-col overflow-hidden h-[300px]"
+        >
+          <div
+            class="flex items-center gap-2 px-6 py-3 border-b border-zinc-900 bg-zinc-900/30"
+          >
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-red-500/20"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/20"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-green-500/20"></div>
+            </div>
+            <span
+              class="text-[10px] font-mono text-zinc-600 ml-2 uppercase tracking-widest"
+              >system.log — bash</span
+            >
+          </div>
+          <div
+            id="terminal-body"
+            class="p-6 font-mono text-xs overflow-y-auto custom-scrollbar flex flex-col gap-2"
+          >
+            <div class="text-[#b3a577]">
+              [SYSTEM] Initializing FocusOS 2.0...
+            </div>
+            <div class="text-zinc-500">[INFO] Location set to Surat, IN</div>
+            <div class="text-zinc-500">[INFO] Weather module online</div>
+            <div class="text-green-500/70">[READY] Kernel standing by.</div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 premium-card p-8">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-bold">
+              Session <span class="heading">Log</span>
+            </h3>
+            <span class="text-[10px] text-zinc-600">Today</span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex gap-4 items-start group">
+              <div class="text-[10px] text-zinc-600 font-mono mt-1">08:15</div>
+              <div class="flex-1">
+                <p class="text-xs font-bold text-zinc-300">React UI Refactor</p>
+                <p class="text-[10px] text-zinc-500 uppercase tracking-tighter">
+                  25m Completed
+                </p>
+              </div>
+              <div class="w-1.5 h-1.5 rounded-full bg-[#b3a577] mt-1.5"></div>
+            </div>
+
+            <div class="flex gap-4 items-start group opacity-60">
+              <div class="text-[10px] text-zinc-600 font-mono mt-1">09:30</div>
+              <div class="flex-1">
+                <p class="text-xs font-bold text-zinc-300">API Documentation</p>
+                <p class="text-[10px] text-zinc-500 uppercase tracking-tighter">
+                  50m deep work
+                </p>
+              </div>
+              <div class="w-1.5 h-1.5 rounded-full bg-zinc-800 mt-1.5"></div>
+            </div>
+
+            <div class="flex gap-4 items-start group opacity-60">
+              <div class="text-[10px] text-zinc-600 font-mono mt-1">11:00</div>
+              <div class="flex-1">
+                <p class="text-xs font-bold text-zinc-300">MUI Styling Fix</p>
+                <p class="text-[10px] text-zinc-500 uppercase tracking-tighter">
+                  15m sprint
+                </p>
+              </div>
+              <div class="w-1.5 h-1.5 rounded-full bg-zinc-800 mt-1.5"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <canvas
+        id="canvas-bg"
+        class="fixed inset-0 z-[-1] pointer-events-none opacity-40"
+      ></canvas>
+
+      <div
+        id="ambient-glow"
+        class="fixed inset-0 z-[-2] transition-colors duration-1000 opacity-20 pointer-events-none"
+        style="
+          background: radial-gradient(
+            circle at 50% 50%,
+            #b3a577 0%,
+            transparent 70%
+          );
+        "
+      ></div>
+
+      <div class="relative group h-full">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold">
+            Neural <span class="heading">Activity</span>
+          </h3>
+          <span class="text-[9px] text-zinc-600 font-mono">LIVE_SYNC</span>
+        </div>
+        <canvas
+          id="neural-canvas"
+          class="w-full h-32 opacity-50 group-hover:opacity-100 transition-opacity"
+        ></canvas>
+
+        <div class="mt-6 flex justify-between items-end">
+          <div>
+            <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
+              Cognitive Load
+            </p>
+            <p class="text-xl font-bold text-[#b3a577]">Optimal</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
+              Daily Goal
+            </p>
+            <p class="text-xl font-bold">85%</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="breather"
+        class="mt-16 flex flex-col items-center opacity-0 transition-all duration-1000 delay-500"
+      >
+        <div
+          class="w-32 h-32 rounded-full border border-[#b3a577]/30 flex items-center justify-center relative"
+        >
+          <div
+            id="breath-circle"
+            class="w-8 h-8 bg-[#b3a577]/20 rounded-full transition-all duration-[4000ms] ease-in-out"
+          ></div>
+          <div
+            class="absolute inset-0 rounded-full border border-[#b3a577] animate-ping opacity-20"
+          ></div>
+        </div>
+        <p
+          id="breath-text"
+          class="mt-8 text-[10px] font-mono tracking-[0.4em] text-zinc-500 uppercase"
+        >
+          Inhale
+        </p>
+      </div>
+
+      <div
+        id="command-palette"
+        class="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[15vh] opacity-0 pointer-events-none transition-all duration-300"
+      >
+        <div
+          class="w-full max-w-xl bg-[#141414] border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300"
+          id="palette-modal"
+        >
+          <div class="flex items-center px-6 py-4 border-b border-zinc-800">
+            <i data-lucide="search" class="w-5 h-5 text-zinc-500 mr-4"></i>
+            <input
+              type="text"
+              id="palette-input"
+              placeholder="Search commands... (e.g. 'Zen', 'Timer', 'Weather')"
+              class="bg-transparent border-none outline-none text-white text-sm w-full font-light"
+            />
+            <kbd
+              class="text-[10px] bg-zinc-900 px-2 py-1 rounded text-zinc-500 border border-zinc-800"
+              >ESC</kbd
+            >
+          </div>
+          <div
+            class="p-2 max-h-[300px] overflow-y-auto custom-scrollbar"
+            id="palette-results"
+          >
+            <div
+              onclick="toggleZen(); closePalette();"
+              class="flex items-center justify-between p-4 hover:bg-zinc-900 rounded-2xl cursor-pointer group transition"
+            >
+              <div class="flex items-center gap-4">
+                <i
+                  data-lucide="eye-off"
+                  class="w-4 h-4 text-zinc-500 group-hover:text-[#b3a577]"
+                ></i>
+                <span class="text-xs font-bold text-zinc-300"
+                  >Toggle Zen Mode</span
+                >
+              </div>
+              <span class="text-[9px] text-zinc-600 font-mono">CMD+Z</span>
+            </div>
+            <div
+              onclick="toggleTimer(); closePalette();"
+              class="flex items-center justify-between p-4 hover:bg-zinc-900 rounded-2xl cursor-pointer group transition"
+            >
+              <div class="flex items-center gap-4">
+                <i
+                  data-lucide="play"
+                  class="w-4 h-4 text-zinc-500 group-hover:text-[#b3a577]"
+                ></i>
+                <span class="text-xs font-bold text-zinc-300"
+                  >Start/Pause Timer</span
+                >
+              </div>
+              <span class="text-[9px] text-zinc-600 font-mono">SPACE</span>
+            </div>
+            <div
+              onclick="fetchWeather(); closePalette();"
+              class="flex items-center justify-between p-4 hover:bg-zinc-900 rounded-2xl cursor-pointer group transition"
+            >
+              <div class="flex items-center gap-4">
+                <i
+                  data-lucide="cloud-lightning"
+                  class="w-4 h-4 text-zinc-500 group-hover:text-[#b3a577]"
+                ></i>
+                <span class="text-xs font-bold text-zinc-300"
+                  >Sync Weather (Surat)</span
+                >
+              </div>
+              <span class="text-[9px] text-zinc-600 font-mono">CMD+W</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script>
-      // --- Navigation ---
+      // --- Command Palette Logic ---
+const palette = document.getElementById('command-palette');
+const paletteModal = document.getElementById('palette-modal');
+const paletteInput = document.getElementById('palette-input');
+
+function openPalette() {
+    palette.classList.replace('opacity-0', 'opacity-100');
+    palette.classList.replace('pointer-events-none', 'pointer-events-auto');
+    paletteModal.classList.replace('scale-95', 'scale-100');
+    paletteInput.focus();
+    logToTerminal('Command Palette Accessed', 'SYSTEM');
+}
+
+function closePalette() {
+    palette.classList.replace('opacity-100', 'opacity-0');
+    palette.classList.replace('pointer-events-auto', 'pointer-events-none');
+    paletteModal.classList.replace('scale-100', 'scale-95');
+    paletteInput.value = '';
+}
+
+// Global Keyboard Listeners
+document.addEventListener('keydown', (e) => {
+    // CMD/CTRL + K to open palette
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        palette.classList.contains('opacity-0') ? openPalette() : closePalette();
+    }
+    
+    // ESC to close
+    if (e.key === 'Escape') closePalette();
+
+    // Global Zen Toggle (CMD+Z)
+    if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+        e.preventDefault();
+        toggleZen();
+    }
+
+    // Timer Spacebar (only if not typing in scratchpad/input)
+    if (e.code === 'Space' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'INPUT') {
+        e.preventDefault();
+        toggleTimer();
+    }
+});
+
+      // --- Neural Network Logic ---
+      const nCanvas = document.getElementById('neural-canvas')
+      const nCtx = nCanvas.getContext('2d')
+      let nodes = []
+
+      function initNeural() {
+        nCanvas.width = nCanvas.offsetWidth
+        nCanvas.height = nCanvas.offsetHeight
+        for (let i = 0; i < 15; i++) {
+          nodes.push({
+            x: Math.random() * nCanvas.width,
+            y: Math.random() * nCanvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5
+          })
+        }
+      }
+
+      function drawNeural() {
+        nCtx.clearRect(0, 0, nCanvas.width, nCanvas.height)
+        nCtx.strokeStyle = 'rgba(179, 165, 119, 0.2)'
+        nCtx.fillStyle = 'rgba(179, 165, 119, 0.5)'
+
+        nodes.forEach((n, i) => {
+          n.x += n.vx
+          n.y += n.vy
+          if (n.x < 0 || n.x > nCanvas.width) n.vx *= -1
+          if (n.y < 0 || n.y > nCanvas.height) n.vy *= -1
+
+          nCtx.beginPath()
+          nCtx.arc(n.x, n.y, 2, 0, Math.PI * 2)
+          nCtx.fill()
+
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dist = Math.hypot(n.x - nodes[j].x, n.y - nodes[j].y)
+            if (dist < 60) {
+              nCtx.lineWidth = 1 - dist / 60
+              nCtx.beginPath()
+              nCtx.moveTo(n.x, n.y)
+              nCtx.lineTo(nodes[j].x, nodes[j].y)
+              nCtx.stroke()
+            }
+          }
+        })
+        requestAnimationFrame(drawNeural)
+      }
+
+      // --- Breathing Guide Logic ---
+      function runBreathing() {
+        const circle = document.getElementById('breath-circle')
+        const text = document.getElementById('breath-text')
+
+        const cycle = () => {
+          if (!isZen) return
+          // Inhale
+          text.innerText = 'Inhale'
+          circle.style.transform = 'scale(4)'
+          circle.style.backgroundColor = 'rgba(179, 165, 119, 0.4)'
+
+          setTimeout(() => {
+            if (!isZen) return
+            text.innerText = 'Hold'
+            setTimeout(() => {
+              if (!isZen) return
+              text.innerText = 'Exhale'
+              circle.style.transform = 'scale(1)'
+              circle.style.backgroundColor = 'rgba(179, 165, 119, 0.1)'
+              setTimeout(cycle, 8000)
+            }, 7000)
+          }, 4000)
+        }
+        cycle()
+      }
+
+      // Update your toggleZen() to trigger the breathing guide
+      // if (isZen) { ... document.getElementById('breather').style.opacity = '1'; runBreathing(); }
+
+      function logToTerminal(message, type = 'INFO') {
+        const terminal = document.getElementById('terminal-body')
+        const time = new Date().toLocaleTimeString([], {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        })
+
+        let colorClass = 'text-zinc-500'
+        if (type === 'SYSTEM') colorClass = 'text-[#b3a577]'
+        if (type === 'SUCCESS') colorClass = 'text-green-500/70'
+        if (type === 'ACTION') colorClass = 'text-blue-400/70'
+
+        const entry = document.createElement('div')
+        entry.className = colorClass
+        entry.innerHTML = `<span class="text-zinc-700">[${time}]</span> [${type}] ${message}`
+
+        terminal.appendChild(entry)
+        terminal.scrollTop = terminal.scrollHeight // Auto-scroll to bottom
+      }
+
+      // EXAMPLE: Update your toggleTimer() function to include this:
+      // logToTerminal('Deep Work Session Started', 'ACTION');
+
+      // Dock Hover Animation Logic
+      document.querySelectorAll('.fixed.bottom-8 button').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+          btn.style.transform = 'scale(1.2) translateY(-4px)'
+        })
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = 'scale(1) translateY(0)'
+        })
+      })
+      // Scratchpad Logic
+      const scratchpad = document.getElementById('scratchpad')
+
+      // Load saved note
+      scratchpad.value = localStorage.getItem('focus_os_notes') || ''
+
+      // Save on every keystroke
+      scratchpad.addEventListener('input', e => {
+        localStorage.setItem('focus_os_notes', e.target.value)
+      })
+
+      function clearNotes() {
+        if (confirm('Clear your scratchpad?')) {
+          scratchpad.value = ''
+          localStorage.removeItem('focus_os_notes')
+        }
+      }
       function initNavigation() {
         const menuToggle = document.getElementById('menu-toggle')
         const navLinks = document.getElementById('nav-links')
@@ -226,7 +1292,10 @@
 
         menuToggle.addEventListener('click', () => {
           isOpen = !isOpen
-          navLinks.classList.toggle('hidden')
+
+          // Toggle the slide effect
+          navLinks.classList.toggle('nav-active')
+
           if (isOpen) {
             iconBars.classList.add('opacity-0', 'scale-75', 'rotate-45')
             iconClose.classList.remove(
