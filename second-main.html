@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
 
       :root {
         --bg-dark: #0a0a0a;
@@ -16,7 +16,7 @@
       }
 
       body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         background-color: var(--bg-dark);
         color: white;
         transition: background 0.5s ease;
@@ -194,17 +194,17 @@
       }
 
       #terminal-body {
-        background-image: linear-gradient(
-            rgba(18, 16, 16, 0) 50%,
-            rgba(0, 0, 0, 0.25) 50%
-          ),
+        background-image:
+          linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
           linear-gradient(
             90deg,
             rgba(255, 0, 0, 0.06),
             rgba(0, 255, 0, 0.02),
             rgba(0, 0, 255, 0.06)
           );
-        background-size: 100% 2px, 3px 100%;
+        background-size:
+          100% 2px,
+          3px 100%;
       }
 
       #terminal-body div {
@@ -223,7 +223,9 @@
       }
 
       #breath-circle {
-        transition: transform 4s ease-in-out, background-color 4s ease-in-out;
+        transition:
+          transform 4s ease-in-out,
+          background-color 4s ease-in-out;
       }
 
       #breather {
@@ -232,7 +234,7 @@
 
       /* Add a subtle scanline effect to the entire Zen mode */
       #zen-overlay::after {
-        content: '';
+        content: "";
         position: absolute;
         inset: 0;
         background: linear-gradient(
@@ -245,24 +247,26 @@
       }
 
       #command-palette {
-    transition: opacity 0.2s ease;
-}
+        transition: opacity 0.2s ease;
+      }
 
-#palette-modal {
-    box-shadow: 0 0 100px rgba(0,0,0,0.8), 0 0 40px rgba(179, 165, 119, 0.05);
-}
+      #palette-modal {
+        box-shadow:
+          0 0 100px rgba(0, 0, 0, 0.8),
+          0 0 40px rgba(179, 165, 119, 0.05);
+      }
 
-/* Text Selection Color to match your Surat Gold theme */
-::selection {
-    background: rgba(179, 165, 119, 0.3);
-    color: white;
-}
+      /* Text Selection Color to match your Surat Gold theme */
+      ::selection {
+        background: rgba(179, 165, 119, 0.3);
+        color: white;
+      }
 
-/* Subtle border animation for the active task */
-#todo-list li:first-child {
-    border-left: 2px solid var(--accent);
-    padding-left: 12px;
-}
+      /* Subtle border animation for the active task */
+      #todo-list li:first-child {
+        border-left: 2px solid var(--accent);
+        padding-left: 12px;
+      }
     </style>
   </head>
   <body class="p-6 md:p-12">
@@ -294,7 +298,9 @@
       >
         <a href="#" class="text-white hover:text-[#b3a577] transition">Home</a>
         <a href="#" class="text-zinc-500 hover:text-white transition">About</a>
-        <a href="#" class="text-zinc-500 hover:text-white transition">Bits</a>
+        <a href="Ui/schedule.html" class="text-zinc-500 hover:text-white transition"
+          >Schedule</a
+        >
         <a href="#" class="text-zinc-500 hover:text-white transition">Pixels</a>
         <a href="#" class="text-zinc-500 hover:text-white transition"
           >Contact</a
@@ -1061,7 +1067,10 @@
             id="palette-results"
           >
             <div
-              onclick="toggleZen(); closePalette();"
+              onclick="
+                toggleZen();
+                closePalette();
+              "
               class="flex items-center justify-between p-4 hover:bg-zinc-900 rounded-2xl cursor-pointer group transition"
             >
               <div class="flex items-center gap-4">
@@ -1076,7 +1085,10 @@
               <span class="text-[9px] text-zinc-600 font-mono">CMD+Z</span>
             </div>
             <div
-              onclick="toggleTimer(); closePalette();"
+              onclick="
+                toggleTimer();
+                closePalette();
+              "
               class="flex items-center justify-between p-4 hover:bg-zinc-900 rounded-2xl cursor-pointer group transition"
             >
               <div class="flex items-center gap-4">
@@ -1091,7 +1103,10 @@
               <span class="text-[9px] text-zinc-600 font-mono">SPACE</span>
             </div>
             <div
-              onclick="fetchWeather(); closePalette();"
+              onclick="
+                fetchWeather();
+                closePalette();
+              "
               class="flex items-center justify-between p-4 hover:bg-zinc-900 rounded-2xl cursor-pointer group transition"
             >
               <div class="flex items-center gap-4">
@@ -1112,380 +1127,384 @@
 
     <script>
       // --- Command Palette Logic ---
-const palette = document.getElementById('command-palette');
-const paletteModal = document.getElementById('palette-modal');
-const paletteInput = document.getElementById('palette-input');
+      const palette = document.getElementById("command-palette");
+      const paletteModal = document.getElementById("palette-modal");
+      const paletteInput = document.getElementById("palette-input");
 
-function openPalette() {
-    palette.classList.replace('opacity-0', 'opacity-100');
-    palette.classList.replace('pointer-events-none', 'pointer-events-auto');
-    paletteModal.classList.replace('scale-95', 'scale-100');
-    paletteInput.focus();
-    logToTerminal('Command Palette Accessed', 'SYSTEM');
-}
+      function openPalette() {
+        palette.classList.replace("opacity-0", "opacity-100");
+        palette.classList.replace("pointer-events-none", "pointer-events-auto");
+        paletteModal.classList.replace("scale-95", "scale-100");
+        paletteInput.focus();
+        logToTerminal("Command Palette Accessed", "SYSTEM");
+      }
 
-function closePalette() {
-    palette.classList.replace('opacity-100', 'opacity-0');
-    palette.classList.replace('pointer-events-auto', 'pointer-events-none');
-    paletteModal.classList.replace('scale-100', 'scale-95');
-    paletteInput.value = '';
-}
+      function closePalette() {
+        palette.classList.replace("opacity-100", "opacity-0");
+        palette.classList.replace("pointer-events-auto", "pointer-events-none");
+        paletteModal.classList.replace("scale-100", "scale-95");
+        paletteInput.value = "";
+      }
 
-// Global Keyboard Listeners
-document.addEventListener('keydown', (e) => {
-    // CMD/CTRL + K to open palette
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        palette.classList.contains('opacity-0') ? openPalette() : closePalette();
-    }
-    
-    // ESC to close
-    if (e.key === 'Escape') closePalette();
+      // Global Keyboard Listeners
+      document.addEventListener("keydown", (e) => {
+        // CMD/CTRL + K to open palette
+        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+          e.preventDefault();
+          palette.classList.contains("opacity-0")
+            ? openPalette()
+            : closePalette();
+        }
 
-    // Global Zen Toggle (CMD+Z)
-    if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
-        e.preventDefault();
-        toggleZen();
-    }
+        // ESC to close
+        if (e.key === "Escape") closePalette();
 
-    // Timer Spacebar (only if not typing in scratchpad/input)
-    if (e.code === 'Space' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'INPUT') {
-        e.preventDefault();
-        toggleTimer();
-    }
-});
+        // Global Zen Toggle (CMD+Z)
+        if ((e.metaKey || e.ctrlKey) && e.key === "z") {
+          e.preventDefault();
+          toggleZen();
+        }
+
+        // Timer Spacebar (only if not typing in scratchpad/input)
+        if (
+          e.code === "Space" &&
+          e.target.tagName !== "TEXTAREA" &&
+          e.target.tagName !== "INPUT"
+        ) {
+          e.preventDefault();
+          toggleTimer();
+        }
+      });
 
       // --- Neural Network Logic ---
-      const nCanvas = document.getElementById('neural-canvas')
-      const nCtx = nCanvas.getContext('2d')
-      let nodes = []
+      const nCanvas = document.getElementById("neural-canvas");
+      const nCtx = nCanvas.getContext("2d");
+      let nodes = [];
 
       function initNeural() {
-        nCanvas.width = nCanvas.offsetWidth
-        nCanvas.height = nCanvas.offsetHeight
+        nCanvas.width = nCanvas.offsetWidth;
+        nCanvas.height = nCanvas.offsetHeight;
         for (let i = 0; i < 15; i++) {
           nodes.push({
             x: Math.random() * nCanvas.width,
             y: Math.random() * nCanvas.height,
             vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5
-          })
+            vy: (Math.random() - 0.5) * 0.5,
+          });
         }
       }
 
       function drawNeural() {
-        nCtx.clearRect(0, 0, nCanvas.width, nCanvas.height)
-        nCtx.strokeStyle = 'rgba(179, 165, 119, 0.2)'
-        nCtx.fillStyle = 'rgba(179, 165, 119, 0.5)'
+        nCtx.clearRect(0, 0, nCanvas.width, nCanvas.height);
+        nCtx.strokeStyle = "rgba(179, 165, 119, 0.2)";
+        nCtx.fillStyle = "rgba(179, 165, 119, 0.5)";
 
         nodes.forEach((n, i) => {
-          n.x += n.vx
-          n.y += n.vy
-          if (n.x < 0 || n.x > nCanvas.width) n.vx *= -1
-          if (n.y < 0 || n.y > nCanvas.height) n.vy *= -1
+          n.x += n.vx;
+          n.y += n.vy;
+          if (n.x < 0 || n.x > nCanvas.width) n.vx *= -1;
+          if (n.y < 0 || n.y > nCanvas.height) n.vy *= -1;
 
-          nCtx.beginPath()
-          nCtx.arc(n.x, n.y, 2, 0, Math.PI * 2)
-          nCtx.fill()
+          nCtx.beginPath();
+          nCtx.arc(n.x, n.y, 2, 0, Math.PI * 2);
+          nCtx.fill();
 
           for (let j = i + 1; j < nodes.length; j++) {
-            const dist = Math.hypot(n.x - nodes[j].x, n.y - nodes[j].y)
+            const dist = Math.hypot(n.x - nodes[j].x, n.y - nodes[j].y);
             if (dist < 60) {
-              nCtx.lineWidth = 1 - dist / 60
-              nCtx.beginPath()
-              nCtx.moveTo(n.x, n.y)
-              nCtx.lineTo(nodes[j].x, nodes[j].y)
-              nCtx.stroke()
+              nCtx.lineWidth = 1 - dist / 60;
+              nCtx.beginPath();
+              nCtx.moveTo(n.x, n.y);
+              nCtx.lineTo(nodes[j].x, nodes[j].y);
+              nCtx.stroke();
             }
           }
-        })
-        requestAnimationFrame(drawNeural)
+        });
+        requestAnimationFrame(drawNeural);
       }
 
       // --- Breathing Guide Logic ---
       function runBreathing() {
-        const circle = document.getElementById('breath-circle')
-        const text = document.getElementById('breath-text')
+        const circle = document.getElementById("breath-circle");
+        const text = document.getElementById("breath-text");
 
         const cycle = () => {
-          if (!isZen) return
+          if (!isZen) return;
           // Inhale
-          text.innerText = 'Inhale'
-          circle.style.transform = 'scale(4)'
-          circle.style.backgroundColor = 'rgba(179, 165, 119, 0.4)'
+          text.innerText = "Inhale";
+          circle.style.transform = "scale(4)";
+          circle.style.backgroundColor = "rgba(179, 165, 119, 0.4)";
 
           setTimeout(() => {
-            if (!isZen) return
-            text.innerText = 'Hold'
+            if (!isZen) return;
+            text.innerText = "Hold";
             setTimeout(() => {
-              if (!isZen) return
-              text.innerText = 'Exhale'
-              circle.style.transform = 'scale(1)'
-              circle.style.backgroundColor = 'rgba(179, 165, 119, 0.1)'
-              setTimeout(cycle, 8000)
-            }, 7000)
-          }, 4000)
-        }
-        cycle()
+              if (!isZen) return;
+              text.innerText = "Exhale";
+              circle.style.transform = "scale(1)";
+              circle.style.backgroundColor = "rgba(179, 165, 119, 0.1)";
+              setTimeout(cycle, 8000);
+            }, 7000);
+          }, 4000);
+        };
+        cycle();
       }
 
       // Update your toggleZen() to trigger the breathing guide
       // if (isZen) { ... document.getElementById('breather').style.opacity = '1'; runBreathing(); }
 
-      function logToTerminal(message, type = 'INFO') {
-        const terminal = document.getElementById('terminal-body')
+      function logToTerminal(message, type = "INFO") {
+        const terminal = document.getElementById("terminal-body");
         const time = new Date().toLocaleTimeString([], {
           hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        })
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
 
-        let colorClass = 'text-zinc-500'
-        if (type === 'SYSTEM') colorClass = 'text-[#b3a577]'
-        if (type === 'SUCCESS') colorClass = 'text-green-500/70'
-        if (type === 'ACTION') colorClass = 'text-blue-400/70'
+        let colorClass = "text-zinc-500";
+        if (type === "SYSTEM") colorClass = "text-[#b3a577]";
+        if (type === "SUCCESS") colorClass = "text-green-500/70";
+        if (type === "ACTION") colorClass = "text-blue-400/70";
 
-        const entry = document.createElement('div')
-        entry.className = colorClass
-        entry.innerHTML = `<span class="text-zinc-700">[${time}]</span> [${type}] ${message}`
+        const entry = document.createElement("div");
+        entry.className = colorClass;
+        entry.innerHTML = `<span class="text-zinc-700">[${time}]</span> [${type}] ${message}`;
 
-        terminal.appendChild(entry)
-        terminal.scrollTop = terminal.scrollHeight // Auto-scroll to bottom
+        terminal.appendChild(entry);
+        terminal.scrollTop = terminal.scrollHeight; // Auto-scroll to bottom
       }
 
       // EXAMPLE: Update your toggleTimer() function to include this:
       // logToTerminal('Deep Work Session Started', 'ACTION');
 
       // Dock Hover Animation Logic
-      document.querySelectorAll('.fixed.bottom-8 button').forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-          btn.style.transform = 'scale(1.2) translateY(-4px)'
-        })
-        btn.addEventListener('mouseleave', () => {
-          btn.style.transform = 'scale(1) translateY(0)'
-        })
-      })
+      document.querySelectorAll(".fixed.bottom-8 button").forEach((btn) => {
+        btn.addEventListener("mouseenter", () => {
+          btn.style.transform = "scale(1.2) translateY(-4px)";
+        });
+        btn.addEventListener("mouseleave", () => {
+          btn.style.transform = "scale(1) translateY(0)";
+        });
+      });
       // Scratchpad Logic
-      const scratchpad = document.getElementById('scratchpad')
+      const scratchpad = document.getElementById("scratchpad");
 
       // Load saved note
-      scratchpad.value = localStorage.getItem('focus_os_notes') || ''
+      scratchpad.value = localStorage.getItem("focus_os_notes") || "";
 
       // Save on every keystroke
-      scratchpad.addEventListener('input', e => {
-        localStorage.setItem('focus_os_notes', e.target.value)
-      })
+      scratchpad.addEventListener("input", (e) => {
+        localStorage.setItem("focus_os_notes", e.target.value);
+      });
 
       function clearNotes() {
-        if (confirm('Clear your scratchpad?')) {
-          scratchpad.value = ''
-          localStorage.removeItem('focus_os_notes')
+        if (confirm("Clear your scratchpad?")) {
+          scratchpad.value = "";
+          localStorage.removeItem("focus_os_notes");
         }
       }
       function initNavigation() {
-        const menuToggle = document.getElementById('menu-toggle')
-        const navLinks = document.getElementById('nav-links')
-        const iconBars = document.getElementById('icon-bars')
-        const iconClose = document.getElementById('icon-close')
-        let isOpen = false
+        const menuToggle = document.getElementById("menu-toggle");
+        const navLinks = document.getElementById("nav-links");
+        const iconBars = document.getElementById("icon-bars");
+        const iconClose = document.getElementById("icon-close");
+        let isOpen = false;
 
-        menuToggle.addEventListener('click', () => {
-          isOpen = !isOpen
+        menuToggle.addEventListener("click", () => {
+          isOpen = !isOpen;
 
           // Toggle the slide effect
-          navLinks.classList.toggle('nav-active')
+          navLinks.classList.toggle("nav-active");
 
           if (isOpen) {
-            iconBars.classList.add('opacity-0', 'scale-75', 'rotate-45')
+            iconBars.classList.add("opacity-0", "scale-75", "rotate-45");
             iconClose.classList.remove(
-              'opacity-0',
-              'scale-75',
-              'pointer-events-none',
-              'rotate-[-45deg]'
-            )
-            iconClose.classList.add('opacity-100', 'scale-100', 'rotate-0')
+              "opacity-0",
+              "scale-75",
+              "pointer-events-none",
+              "rotate-[-45deg]",
+            );
+            iconClose.classList.add("opacity-100", "scale-100", "rotate-0");
           } else {
-            iconBars.classList.remove('opacity-0', 'scale-75', 'rotate-45')
+            iconBars.classList.remove("opacity-0", "scale-75", "rotate-45");
             iconClose.classList.add(
-              'opacity-0',
-              'scale-75',
-              'pointer-events-none',
-              'rotate-[-45deg]'
-            )
-            iconClose.classList.remove('opacity-100', 'scale-100', 'rotate-0')
+              "opacity-0",
+              "scale-75",
+              "pointer-events-none",
+              "rotate-[-45deg]",
+            );
+            iconClose.classList.remove("opacity-100", "scale-100", "rotate-0");
           }
-          lucide.createIcons()
-        })
+          lucide.createIcons();
+        });
       }
 
       // --- Timer ---
-      let timeLeft = 1500
-      let timerId = null
-      let todos = JSON.parse(localStorage.getItem('dark_focus_tasks')) || [
-        { text: 'Finish React UI refactor', done: false },
-        { text: 'Update portfolio logic', done: true }
-      ]
+      let timeLeft = 1500;
+      let timerId = null;
+      let todos = JSON.parse(localStorage.getItem("dark_focus_tasks")) || [
+        { text: "Finish React UI refactor", done: false },
+        { text: "Update portfolio logic", done: true },
+      ];
 
       function toggleTimer() {
-        const btn = document.getElementById('timer-btn')
+        const btn = document.getElementById("timer-btn");
         const elementsToDim = [
-          'main-nav',
-          'profile-section',
-          'weather-card',
-          'task-card'
-        ].map(id => document.getElementById(id))
+          "main-nav",
+          "profile-section",
+          "weather-card",
+          "task-card",
+        ].map((id) => document.getElementById(id));
 
         if (timerId) {
-          clearInterval(timerId)
-          timerId = null
-          btn.innerText = 'Start'
+          clearInterval(timerId);
+          timerId = null;
+          btn.innerText = "Start";
           btn.className =
-            'flex-1 bg-white text-black py-4 rounded-2xl font-bold hover:bg-zinc-200 transition'
-          elementsToDim.forEach(el => el.classList.remove('focus-dim'))
-          document.getElementById('timer-card').classList.remove('no-blur')
+            "flex-1 bg-white text-black py-4 rounded-2xl font-bold hover:bg-zinc-200 transition";
+          elementsToDim.forEach((el) => el.classList.remove("focus-dim"));
+          document.getElementById("timer-card").classList.remove("no-blur");
         } else {
           timerId = setInterval(() => {
-            timeLeft--
-            updateDisplay()
+            timeLeft--;
+            updateDisplay();
             if (timeLeft <= 0) {
-              clearInterval(timerId)
-              resetTimer()
-              alert('Focus complete!')
+              clearInterval(timerId);
+              resetTimer();
+              alert("Focus complete!");
             }
-          }, 1000)
-          btn.innerText = 'Pause'
+          }, 1000);
+          btn.innerText = "Pause";
           btn.className =
-            'flex-1 bg-zinc-800 text-white py-4 rounded-2xl font-bold transition'
-          elementsToDim.forEach(el => el.classList.add('focus-dim'))
-          document.getElementById('timer-card').classList.add('no-blur')
+            "flex-1 bg-zinc-800 text-white py-4 rounded-2xl font-bold transition";
+          elementsToDim.forEach((el) => el.classList.add("focus-dim"));
+          document.getElementById("timer-card").classList.add("no-blur");
         }
       }
 
       function resetTimer() {
-        clearInterval(timerId)
-        timerId = null
-        timeLeft = 1500
-        updateDisplay()
-        const btn = document.getElementById('timer-btn')
-        btn.innerText = 'Start'
+        clearInterval(timerId);
+        timerId = null;
+        timeLeft = 1500;
+        updateDisplay();
+        const btn = document.getElementById("timer-btn");
+        btn.innerText = "Start";
         btn.className =
-          'flex-1 bg-white text-black py-4 rounded-2xl font-bold hover:bg-zinc-200 transition'
-        ;['main-nav', 'profile-section', 'weather-card', 'task-card'].forEach(
-          id => document.getElementById(id).classList.remove('focus-dim')
-        )
-        document.getElementById('timer-card').classList.remove('no-blur')
+          "flex-1 bg-white text-black py-4 rounded-2xl font-bold hover:bg-zinc-200 transition";
+        ["main-nav", "profile-section", "weather-card", "task-card"].forEach(
+          (id) => document.getElementById(id).classList.remove("focus-dim"),
+        );
+        document.getElementById("timer-card").classList.remove("no-blur");
       }
 
       function updateDisplay() {
-        const m = Math.floor(timeLeft / 60)
-        const s = timeLeft % 60
-        document.getElementById('timer-display').innerText = `${m}:${s
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        document.getElementById("timer-display").innerText = `${m}:${s
           .toString()
-          .padStart(2, '0')}`
+          .padStart(2, "0")}`;
       }
 
       // --- Weather ---
       async function fetchWeather() {
         try {
           const res = await fetch(
-            'https://api.open-meteo.com/v1/forecast?latitude=21.1702&longitude=72.8311&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&timezone=auto'
-          )
-          const data = await res.json()
-          const cur = data.current
-          document.getElementById('temp').innerText = `${Math.round(
-            cur.temperature_2m
-          )}°`
-          document.getElementById(
-            'humidity'
-          ).innerText = `${cur.relative_humidity_2m}%`
-          document.getElementById('feels-like').innerText = `${Math.round(
-            cur.apparent_temperature
-          )}°C`
+            "https://api.open-meteo.com/v1/forecast?latitude=21.1702&longitude=72.8311&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&timezone=auto",
+          );
+          const data = await res.json();
+          const cur = data.current;
+          document.getElementById("temp").innerText = `${Math.round(
+            cur.temperature_2m,
+          )}°`;
+          document.getElementById("humidity").innerText =
+            `${cur.relative_humidity_2m}%`;
+          document.getElementById("feels-like").innerText = `${Math.round(
+            cur.apparent_temperature,
+          )}°C`;
           const codes = {
-            0: 'Clear',
-            1: 'Mainly Clear',
-            2: 'Cloudy',
-            3: 'Overcast',
-            61: 'Rain'
-          }
-          document.getElementById('desc').innerText =
-            codes[cur.weather_code] || 'Clear'
+            0: "Clear",
+            1: "Mainly Clear",
+            2: "Cloudy",
+            3: "Overcast",
+            61: "Rain",
+          };
+          document.getElementById("desc").innerText =
+            codes[cur.weather_code] || "Clear";
           const iconMap = {
-            0: 'sun',
-            1: 'cloud-sun',
-            2: 'cloud',
-            3: 'clouds',
-            61: 'cloud-rain'
-          }
-          const iconName = iconMap[cur.weather_code] || 'sun'
-          document.getElementById(
-            'weather-icon'
-          ).innerHTML = `<i data-lucide="${iconName}" class="w-8 h-8 text-[#b3a577]"></i>`
-          lucide.createIcons()
+            0: "sun",
+            1: "cloud-sun",
+            2: "cloud",
+            3: "clouds",
+            61: "cloud-rain",
+          };
+          const iconName = iconMap[cur.weather_code] || "sun";
+          document.getElementById("weather-icon").innerHTML =
+            `<i data-lucide="${iconName}" class="w-8 h-8 text-[#b3a577]"></i>`;
+          lucide.createIcons();
         } catch (e) {
-          console.error('Weather failed')
+          console.error("Weather failed");
         }
       }
 
       // --- Todo ---
       function renderTodos() {
-        const list = document.getElementById('todo-list')
+        const list = document.getElementById("todo-list");
         list.innerHTML = todos
           .map(
             (t, i) => `
           <li class="flex items-center justify-between group bg-zinc-900/30 p-3 rounded-2xl hover:bg-zinc-900/50 transition">
             <label class="flex items-center gap-4 cursor-pointer flex-1">
               <input type="checkbox" class="hidden" ${
-                t.done ? 'checked' : ''
+                t.done ? "checked" : ""
               } onchange="toggleTodo(${i})">
               <div class="w-6 h-6 rounded-full border-2 border-zinc-700 flex items-center justify-center transition ${
-                t.done ? 'bg-white border-white' : ''
+                t.done ? "bg-white border-white" : ""
               }">
                 ${
                   t.done
                     ? '<i data-lucide="check" class="text-black w-3 h-3"></i>'
-                    : ''
+                    : ""
                 }
               </div>
               <span class="text-sm font-medium ${
-                t.done ? 'text-zinc-600 line-through' : 'text-zinc-200'
+                t.done ? "text-zinc-600 line-through" : "text-zinc-200"
               }">${t.text}</span>
             </label>
             <button onclick="deleteTodo(${i})" class="opacity-0 group-hover:opacity-100 text-zinc-600 hover:text-red-500 transition px-2">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           </li>
-        `
+        `,
           )
-          .join('')
-        lucide.createIcons()
-        localStorage.setItem('dark_focus_tasks', JSON.stringify(todos))
+          .join("");
+        lucide.createIcons();
+        localStorage.setItem("dark_focus_tasks", JSON.stringify(todos));
       }
 
       function addTodo() {
-        const val = prompt('Priority Task:')
+        const val = prompt("Priority Task:");
         if (val) {
-          todos.unshift({ text: val, done: false })
-          renderTodos()
+          todos.unshift({ text: val, done: false });
+          renderTodos();
         }
       }
       function toggleTodo(i) {
-        todos[i].done = !todos[i].done
-        renderTodos()
+        todos[i].done = !todos[i].done;
+        renderTodos();
       }
       function deleteTodo(i) {
-        todos.splice(i, 1)
-        renderTodos()
+        todos.splice(i, 1);
+        renderTodos();
       }
 
       // --- Startup ---
-      document.addEventListener('DOMContentLoaded', () => {
-        fetchWeather()
-        renderTodos()
-        initNavigation()
-        lucide.createIcons()
-      })
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchWeather();
+        renderTodos();
+        initNavigation();
+        lucide.createIcons();
+      });
     </script>
   </body>
 </html>
