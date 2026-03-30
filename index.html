@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TP // FocusOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;400;900&family=JetBrains+Mono:wght@300&display=swap");
+
+      :root {
+        --bg: #080808;
+        --accent: #b3a577;
+        --panel: #111111;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg);
+        color: #fff;
+        overflow: hidden;
+        height: 100vh;
+        transition: background 0.5s ease;
+      }
+
+      .timer-glow {
+        text-shadow: 0 0 80px rgba(179, 165, 119, 0.15);
+        transition: transform 0.6s ease;
+      }
+
+      /* --- ZEN MODE / BLACKOUT --- */
+      .zen-mode aside,
+      .zen-mode .branding-header,
+      .zen-mode .live-intel {
+        opacity: 0 !important;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+      }
+
+      .zen-mode main {
+        background: #000 !important;
+        width: 100vw;
+        transition: all 0.5s ease;
+      }
+
+      .zen-mode #timer-display {
+        transform: scale(1.1);
+      }
+
+      /* --- UI ELEMENTS --- */
+      .input-clean {
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        outline: none;
+        transition: 0.3s;
+      }
+      .input-clean:focus {
+        border-bottom-color: var(--accent);
+      }
+
+      .custom-scroll::-webkit-scrollbar {
+        width: 2px;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: var(--accent);
+      }
+    </style>
+  </head>
+  <body class="flex">
+    <main
+      class="flex-grow flex flex-col p-12 relative transition-all duration-500"
+    >
+      <div class="branding-header flex items-center gap-4 opacity-80">
+        <div class="text-xl font-black italic tracking-tighter">Tp</div>
+        <div class="h-6 w-[1px] bg-white/10"></div>
+        <span
+          class="text-[10px] tracking-[0.5em] font-mono text-zinc-500 uppercase"
+          >Operating_System_V2</span
+        >
+      </div>
+
+      <div class="flex-grow flex flex-col items-center justify-center">
+        <p
+          id="timer-label"
+          class="text-[10px] tracking-[0.8em] text-[#b3a577] mb-4 uppercase font-mono"
+        >
+          Deep Work Session
+        </p>
+        <h1
+          id="timer-display"
+          class="text-[14rem] font-black tracking-tighter timer-glow leading-none"
+        >
+          25:00
+        </h1>
+
+        <div id="controls-row" class="flex gap-12 mt-8 relative z-50">
+          <button
+            onclick="toggleTimer()"
+            id="main-action"
+            class="text-sm tracking-[0.4em] uppercase hover:text-[#b3a577] transition duration-500 font-bold"
+          >
+            Start_Session
+          </button>
+          <button
+            onclick="resetTimer()"
+            class="text-sm tracking-[0.4em] uppercase text-zinc-700 hover:text-white transition duration-500 font-bold"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="live-intel flex items-center gap-6 overflow-hidden whitespace-nowrap opacity-40 hover:opacity-100 transition duration-700"
+      >
+        <span class="text-[10px] font-bold text-[#b3a577]">LIVE_INTEL</span>
+        <div class="flex gap-12 text-[10px] font-mono">
+          <span>> WEATHER: 29°C CLEAR SKY IN AHMEDABAD...</span>
+          <span>> STATUS: FOCUS_MODE_ENABLED...</span>
+          <span>> DATA_SOURCE: PLANNER_SYNC_ACTIVE...</span>
+        </div>
+      </div>
+    </main>
+
+    <aside
+      class="w-[400px] bg-[#111] border-l border-white/5 flex flex-col p-10 h-full"
+    >
+      <div class="flex justify-between items-center mb-16">
+        <div>
+          <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
+            Region
+          </p>
+          <p class="text-lg font-light">
+            Surat, <span class="text-[#b3a577]">IN</span>
+          </p>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
+            Clock
+          </p>
+          <p id="clock" class="text-lg font-light">00:00</p>
+        </div>
+      </div>
+
+      <div
+        class="flex-grow flex flex-col gap-12 overflow-y-auto custom-scroll pr-4"
+      >
+        <div>
+          <div class="flex justify-between items-center mb-6">
+            <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em]">
+              today-task
+            </p>
+            <button
+              onclick="syncTasksFromPlanner()"
+              class="text-[8px] text-[#b3a577] hover:text-white uppercase font-bold tracking-widest"
+            >
+              Sync
+            </button>
+          </div>
+          <div
+            class="h-[108px] overflow-y-auto custom-scroll pr-2"
+            id="todo-scroll-container"
+          >
+            <div id="todo-list" class="space-y-0"></div>
+          </div>
+          <input
+            type="text"
+            id="todo-input"
+            placeholder="+"
+            class="w-full mt-4 py-2 input-clean text-sm font-mono text-[#b3a577]"
+          />
+        </div>
+
+        <div class="flex-grow">
+          <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-4">
+            Scratchpad
+          </p>
+          <textarea
+            id="scratch"
+            class="w-full h-48 bg-transparent border-none text-zinc-400 text-xs font-mono leading-relaxed outline-none resize-none"
+            placeholder="// Log thoughts..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="mt-8 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          <span class="text-[9px] font-mono text-zinc-500 uppercase"
+            >Link_Secure</span
+          >
+        </div>
+        <a
+          href="planner.html"
+          class="text-[9px] font-bold text-[#b3a577] hover:tracking-[0.2em] transition-all uppercase"
+          >Open_Planner</a
+        >
+      </div>
+    </aside>
+
+    <script>
+      lucide.createIcons();
+
+      // 1. Clock Logic
+      function updateClock() {
+        document.getElementById("clock").innerText =
+          new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // 2. Timer & Zen Logic
+      let timeLeft = 25 * 60,
+        timerId = null;
+
+      function toggleTimer() {
+        const btn = document.getElementById("main-action"),
+          body = document.body;
+        if (timerId) {
+          clearInterval(timerId);
+          timerId = null;
+          btn.innerText = "Resume_Session";
+          body.classList.remove("zen-mode");
+        } else {
+          timerId = setInterval(() => {
+            if (timeLeft > 0) {
+              timeLeft--;
+              updateDisplay();
+            } else {
+              clearInterval(timerId);
+              body.classList.remove("zen-mode");
+            }
+          }, 1000);
+          btn.innerText = "Pause_Flow";
+          body.classList.add("zen-mode");
+        }
+      }
+
+      function updateDisplay() {
+        const mins = Math.floor(timeLeft / 60),
+          secs = timeLeft % 60;
+        document.getElementById("timer-display").innerText =
+          `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+      }
+
+      function resetTimer() {
+        clearInterval(timerId);
+        timerId = null;
+        timeLeft = 25 * 60;
+        updateDisplay();
+        document.getElementById("main-action").innerText = "Start_Session";
+        document.body.classList.remove("zen-mode");
+      }
+
+      // 3. Sync Logic (Planner -> Dashboard)
+      const list = document.getElementById("todo-list");
+      const container = document.getElementById("todo-scroll-container");
+      const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+      function syncTasksFromPlanner() {
+        const today = days[new Date().getDay()];
+        const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+        list.innerHTML = ""; // Clear current
+
+        hours.forEach((h) => {
+          const task = localStorage.getItem(`tp-${today}-${h}`);
+          if (task && task.trim() !== "") {
+            const item = document.createElement("div");
+            item.className =
+              "text-xs font-mono py-2 border-b border-white/5 flex gap-4 items-center group cursor-pointer";
+            item.innerHTML = `<span class="text-[#b3a577] opacity-40">${h}:00</span> <span class="text-zinc-300">${task}</span>`;
+            item.onclick = () => item.remove();
+            list.appendChild(item);
+          }
+        });
+      }
+
+      syncTasksFromPlanner(); // Initial load
+
+      // 4. Manual Add Logic
+      const input = document.getElementById("todo-input");
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && input.value) {
+          const item = document.createElement("div");
+          item.className =
+            "text-xs font-mono py-2 border-b border-white/5 flex gap-4 items-center cursor-pointer";
+          item.innerHTML = `<span class="text-[#b3a577]">>></span> ${input.value}`;
+          item.onclick = () => item.remove();
+          list.appendChild(item);
+          input.value = "";
+          container.scrollTop = container.scrollHeight;
+        }
+      });
+
+      // 5. Persistence
+      const scratch = document.getElementById("scratch");
+      scratch.value = localStorage.getItem("tp_scratch") || "";
+      scratch.oninput = () => localStorage.setItem("tp_scratch", scratch.value);
+    </script>
+  </body>
+</html>
