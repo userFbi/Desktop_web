@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes // FocusOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&display=swap");
+      :root {
+        --bg: #080808;
+        --accent: #b3a577;
+        --panel: #111;
+        --border: rgba(255, 255, 255, 0.05);
+      }
+      body {
+        background: var(--bg);
+        color: #fff;
+        font-family: "JetBrains Mono", monospace;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+      }
+
+      /* Layout */
+      .sidebar {
+        width: 200px;
+        border-right: 1px solid var(--border);
+        background: #0a0a0a;
+        transition: 0.3s;
+      }
+      .note-list {
+        width: 280px;
+        border-right: 1px solid var(--border);
+        background: #0d0d0d;
+      }
+      .editor-area {
+        flex-grow: 1;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Components */
+      .folder-item {
+        padding: 12px 20px;
+        font-size: 10px;
+        cursor: pointer;
+        color: #555;
+        transition: 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border-left: 2px solid transparent;
+      }
+      .folder-item.active {
+        color: var(--accent);
+        background: rgba(179, 165, 119, 0.03);
+        border-left-color: var(--accent);
+        font-weight: bold;
+      }
+
+      .note-card {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: 0.2s;
+        position: relative;
+      }
+      .note-card:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .note-card.active {
+        background: rgba(179, 165, 119, 0.06);
+      }
+      .note-card.active::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 20%;
+        height: 60%;
+        width: 2px;
+        background: var(--accent);
+      }
+
+      .custom-scroll::-webkit-scrollbar {
+        width: 2px;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: var(--accent);
+      }
+
+      /* Input/Textarea Styling */
+      .title-input {
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 24px;
+        font-weight: 800;
+        color: #fff;
+        width: 100%;
+        padding: 40px 40px 10px 40px;
+        letter-spacing: -0.02em;
+      }
+      .title-input::placeholder {
+        color: #222;
+      }
+
+      textarea {
+        background: transparent;
+        border: none;
+        outline: none;
+        resize: none;
+        width: 100%;
+        height: 100%;
+        color: #888;
+        line-height: 1.8;
+        font-size: 14px;
+        padding: 10px 40px 40px 40px;
+      }
+      textarea:focus {
+        color: #ccc;
+      }
+
+      .search-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        width: 100%;
+        padding: 10px;
+        font-size: 10px;
+        outline: none;
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar flex flex-col p-6">
+      <a
+        href="index.html"
+        class="text-[9px] text-[#b3a577] tracking-[0.4em] uppercase mb-12 block opacity-50 hover:opacity-100 transition"
+        ><< Core</a
+      >
+      <p class="text-[8px] text-zinc-700 uppercase tracking-[0.3em] mb-4">
+        Directories
+      </p>
+      <div id="folder-list" class="space-y-1"></div>
+      <button
+        onclick="addFolder()"
+        class="mt-8 text-[9px] text-zinc-600 hover:text-accent transition uppercase tracking-widest"
+      >
+        + New_Dir
+      </button>
+    </aside>
+
+    <section class="note-list flex flex-col">
+      <div class="p-6 border-b border-white/5">
+        <input
+          type="text"
+          id="search"
+          oninput="renderNotes()"
+          placeholder="FIND_ENTRY..."
+          class="search-box"
+        />
+      </div>
+      <div
+        id="note-items"
+        class="flex-grow overflow-y-auto custom-scroll"
+      ></div>
+      <button
+        onclick="addNote()"
+        class="p-4 bg-white/5 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-[#b3a577] hover:text-black transition"
+      >
+        Create_Entry
+      </button>
+    </section>
+
+    <main class="editor-area">
+      <div class="flex flex-col h-full">
+        <input
+          type="text"
+          id="note-title"
+          class="title-input"
+          placeholder="Note_Title..."
+          oninput="updateCurrentNote()"
+        />
+
+        <div
+          class="px-10 flex items-center gap-4 opacity-30 text-[9px] uppercase tracking-widest mb-4"
+        >
+          <span id="note-info">No_Selection</span>
+          <span class="h-[1px] flex-grow bg-white/10"></span>
+          <button
+            onclick="deleteNote()"
+            class="text-red-900 hover:text-red-500 transition"
+          >
+            Delete_Entry
+          </button>
+        </div>
+
+        <textarea
+          id="note-body"
+          placeholder="// Initialize content..."
+          oninput="updateCurrentNote()"
+        ></textarea>
+      </div>
+    </main>
+
+    <script>
+      let state = JSON.parse(localStorage.getItem("focus_notes_v3")) || {
+        folders: ["General", "Work"],
+        notes: [],
+        activeFolder: "General",
+        activeNoteId: null,
+      };
+
+      const titleInp = document.getElementById("note-title");
+      const bodyInp = document.getElementById("note-body");
+      const infoSpan = document.getElementById("note-info");
+
+      function addFolder() {
+        const name = prompt("New Folder Name:");
+        if (name) {
+          state.folders.push(name);
+          sync();
+          renderFolders();
+        }
+      }
+
+      function addNote() {
+        const newNote = {
+          id: Date.now(),
+          folder: state.activeFolder,
+          title: "New Note",
+          content: "",
+          date: new Date().toLocaleDateString(),
+        };
+        state.notes.unshift(newNote);
+        state.activeNoteId = newNote.id;
+        sync();
+        renderNotes();
+        loadActiveNote();
+      }
+
+      function loadActiveNote() {
+        const note = state.notes.find((n) => n.id === state.activeNoteId);
+        if (note) {
+          titleInp.value = note.title;
+          bodyInp.value = note.content;
+          infoSpan.innerText = `${note.folder} // Last_Update: ${note.date}`;
+        } else {
+          titleInp.value = "";
+          bodyInp.value = "";
+          infoSpan.innerText = "No_Selection";
+        }
+      }
+
+      function updateCurrentNote() {
+        const note = state.notes.find((n) => n.id === state.activeNoteId);
+        if (note) {
+          note.title = titleInp.value || "Untitled Note";
+          note.content = bodyInp.value;
+          note.date = new Date().toLocaleDateString();
+          sync();
+          renderNotes(); // Refresh list to see title change
+        }
+      }
+
+      function deleteNote() {
+        if (confirm("Confirm Delete?")) {
+          state.notes = state.notes.filter((n) => n.id !== state.activeNoteId);
+          state.activeNoteId = null;
+          sync();
+          renderNotes();
+          loadActiveNote();
+        }
+      }
+
+      function renderFolders() {
+        const list = document.getElementById("folder-list");
+        list.innerHTML = "";
+        state.folders.forEach((f) => {
+          const div = document.createElement("div");
+          div.className = `folder-item ${state.activeFolder === f ? "active" : ""}`;
+          div.innerText = f;
+          div.onclick = () => {
+            state.activeFolder = f;
+            renderFolders();
+            renderNotes();
+          };
+          list.appendChild(div);
+        });
+      }
+
+      function renderNotes() {
+        const list = document.getElementById("note-items");
+        const query = document.getElementById("search").value.toLowerCase();
+        list.innerHTML = "";
+
+        const filtered = state.notes.filter(
+          (n) =>
+            (n.folder === state.activeFolder || query !== "") &&
+            (n.title.toLowerCase().includes(query) ||
+              n.content.toLowerCase().includes(query)),
+        );
+
+        filtered.forEach((n) => {
+          const card = document.createElement("div");
+          card.className = `note-card ${state.activeNoteId === n.id ? "active" : ""}`;
+          card.innerHTML = `
+            <div class="text-[10px] font-black text-white uppercase mb-1 truncate">${n.title}</div>
+            <div class="text-[9px] text-zinc-600 truncate">${n.content.substring(0, 35) || "No content..."}</div>
+          `;
+          card.onclick = () => {
+            state.activeNoteId = n.id;
+            renderNotes();
+            loadActiveNote();
+          };
+          list.appendChild(card);
+        });
+      }
+
+      function sync() {
+        localStorage.setItem("focus_notes_v3", JSON.stringify(state));
+      }
+
+      // Start
+      renderFolders();
+      renderNotes();
+      if (state.activeNoteId) loadActiveNote();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300&display=swap");
+      :root {
+        --bg: #080808;
+        --accent: #b3a577;
+      }
+      body {
+        background: var(--bg);
+        color: #fff;
+        font-family: "JetBrains Mono", monospace;
+        padding: 4rem;
+      }
+      .habit-row {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 1.5rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border: 1px solid var(--accent);
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .status-dot.active {
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <a
+      href="/index.html"
+      class="text-[10px] text-[#b3a577] tracking-[0.3em] uppercase mb-12 block"
+      ><< Return_to_Core</a
+    >
+    <h1 class="text-xl font-bold italic mb-12 opacity-50">
+      RECURRING_PROTOCOLS // HABITS
+    </h1>
+
+    <div class="max-w-xl">
+      <div class="habit-row">
+        <span>Deep_Work_4H</span>
+        <div class="status-dot" onclick="this.classList.toggle('active')"></div>
+      </div>
+      <div class="habit-row">
+        <span>System_Audit_Finance</span>
+        <div class="status-dot" onclick="this.classList.toggle('active')"></div>
+      </div>
+      <div class="habit-row">
+        <span>Physical_Maintenance</span>
+        <div class="status-dot" onclick="this.classList.toggle('active')"></div>
+      </div>
+    </div>
+  </body>
+</html>
