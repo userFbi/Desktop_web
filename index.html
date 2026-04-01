@@ -8,47 +8,74 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;400;900&family=JetBrains+Mono:wght@300&display=swap");
-
       :root {
         --bg: #080808;
         --accent: #b3a577;
         --panel: #111111;
       }
-
       body {
         font-family: "Inter", sans-serif;
         background-color: var(--bg);
         color: #fff;
         overflow: hidden;
         height: 100vh;
-        transition: background 0.5s ease;
       }
-
       .timer-glow {
         text-shadow: 0 0 80px rgba(179, 165, 119, 0.15);
-        transition: transform 0.6s ease;
       }
 
-      /* --- STICKY ZEN MODE / BLACKOUT --- */
+      /* --- 360 DEGREE HOVER ROTATION --- */
+      #logo {
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .branding-header:hover #logo {
+        transform: rotate(360deg);
+      }
+
+      /* --- HOVER REVEAL SYSTEM --- */
+      .branding-header .reveal-content {
+        opacity: 0;
+        transform: translateX(-15px);
+        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        pointer-events: none;
+      }
+
+      .branding-header:hover .reveal-content {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      /* Zen Mode */
       .zen-mode aside,
       .zen-mode .branding-header,
-      .zen-mode .live-intel {
+      .zen-mode .dock-links {
         opacity: 0 !important;
         pointer-events: none;
         transition: opacity 0.4s ease;
       }
-
       .zen-mode main {
         background: #000 !important;
         width: 100vw;
         transition: all 0.5s ease;
       }
-
       .zen-mode #timer-display {
         transform: scale(1.1);
+        transition: transform 0.6s ease;
       }
 
-      /* --- UI ELEMENTS --- */
+      /* UI Elements */
+      .nav-link {
+        font-size: 10px;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.2em;
+        color: #444;
+        transition: 0.3s;
+        text-transform: uppercase;
+      }
+      .nav-link:hover {
+        color: var(--accent);
+      }
       .input-clean {
         background: transparent;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -58,12 +85,23 @@
       .input-clean:focus {
         border-bottom-color: var(--accent);
       }
-
       .custom-scroll::-webkit-scrollbar {
         width: 2px;
       }
       .custom-scroll::-webkit-scrollbar-thumb {
         background: var(--accent);
+      }
+      .dock-item {
+        transition: 0.3s;
+        color: rgba(255, 255, 255, 0.4);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+      }
+      .dock-item:hover {
+        color: var(--accent);
+        letter-spacing: 0.4em;
       }
     </style>
   </head>
@@ -71,15 +109,32 @@
     <main
       class="flex-grow flex flex-col p-12 relative transition-all duration-500"
     >
-      <div class="branding-header flex items-center gap-4 opacity-80">
-        <div class="text-xl font-black italic tracking-tighter uppercase">
+      <div
+        class="branding-header flex items-center gap-6 opacity-80 relative z-[100] w-fit cursor-pointer"
+      >
+        <div
+          id="logo"
+          class="text-xl font-black italic tracking-tighter uppercase select-none"
+        >
           Tp
         </div>
-        <div class="h-6 w-[1px] bg-white/10"></div>
-        <span
-          class="text-[10px] tracking-[0.5em] font-mono text-zinc-500 uppercase"
-          >Operating_System_V2</span
-        >
+
+        <div class="reveal-content flex items-center gap-6">
+          <div class="h-6 w-[1px] bg-white/10"></div>
+
+          <div class="flex items-center gap-6">
+            <span
+              class="text-[10px] text-[#b3a577] font-mono font-bold tracking-widest"
+              >>></span
+            >
+            <a href="#" class="nav-link">Vault</a>
+            <a href="#" class="nav-link">Locker</a>
+            <a href="#" class="nav-link">Notes</a>
+            <span class="text-[8px] text-zinc-800 font-mono tracking-widest"
+              >// SECURE_SESSION</span
+            >
+          </div>
+        </div>
       </div>
 
       <div class="flex-grow flex flex-col items-center justify-center">
@@ -96,7 +151,21 @@
           25:00
         </h1>
 
-        <div id="controls-row" class="flex gap-12 mt-8 relative z-50">
+        <div class="mt-4 mb-8 flex items-center gap-3">
+          <span class="h-[1px] w-8 bg-white/10"></span>
+          <p
+            class="text-[10px] font-mono tracking-[0.4em] text-zinc-500 uppercase"
+          >
+            Sessions:
+            <span id="session-count-display" class="text-[#b3a577] font-bold"
+              >0</span
+            >
+            / 3
+          </p>
+          <span class="h-[1px] w-8 bg-white/10"></span>
+        </div>
+
+        <div id="controls-row" class="flex gap-12 relative z-50">
           <button
             onclick="toggleTimer()"
             id="main-action"
@@ -113,14 +182,28 @@
         </div>
       </div>
 
-      <div
-        class="live-intel flex items-center gap-6 overflow-hidden whitespace-nowrap opacity-40 hover:opacity-100 transition duration-700"
-      >
-        <span class="text-[10px] font-bold text-[#b3a577]">LIVE_INTEL</span>
-        <div class="flex gap-12 text-[10px] font-mono">
-          <span>> STATUS: FOCUS_MODE_ENABLED...</span>
+      <div class="dock-links flex items-center gap-8 overflow-hidden py-4">
+        <div class="flex items-center gap-3 pr-4">
+          <div
+            class="w-1.5 h-1.5 rounded-full bg-[#b3a577] animate-pulse"
+          ></div>
           <span
-            >> SESSIONS_COMPLETED: <span id="intel-count">0</span>/3...</span
+            class="text-[10px] font-black tracking-[0.3em] text-[#b3a577] uppercase"
+            >NETWORK_DOCK >></span
+          >
+        </div>
+        <div class="flex items-center gap-10">
+          <a href="https://github.com" target="_blank" class="dock-item"
+            >GitHub</a
+          >
+          <a href="https://gemini.google.com" target="_blank" class="dock-item"
+            >Gemini</a
+          >
+          <a href="https://chat.openai.com" target="_blank" class="dock-item"
+            >ChatGPT</a
+          >
+          <a href="https://youtube.com" target="_blank" class="dock-item"
+            >YouTube</a
           >
         </div>
       </div>
@@ -149,18 +232,6 @@
       <div
         class="flex-grow flex flex-col gap-12 overflow-y-auto custom-scroll pr-4"
       >
-        <div class="border-b border-white/5 pb-8">
-          <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-4">
-            Daily Goal
-          </p>
-          <div class="flex items-end gap-2">
-            <span id="session-count" class="text-4xl font-black text-[#b3a577]"
-              >0</span
-            >
-            <span class="text-zinc-600 font-mono mb-1">/ 3 SESSIONS</span>
-          </div>
-        </div>
-
         <div>
           <div class="flex justify-between items-center mb-6">
             <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em]">
@@ -217,31 +288,32 @@
     <script>
       lucide.createIcons();
 
-      // 1. Clock Logic (HH:MM:SS AM/PM)
       function updateClock() {
         const now = new Date();
-        const timeStr = now.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        document.getElementById("clock").innerText = timeStr;
+        document.getElementById("clock").innerText = now.toLocaleTimeString(
+          [],
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          },
+        );
       }
       setInterval(updateClock, 1000);
       updateClock();
 
-      // 2. Session Counter Logic
       function getSessionData() {
         const today = new Date().toDateString();
         const savedData = JSON.parse(
           localStorage.getItem("tp_session_data") || '{"date": "", "count": 0}',
         );
+        return savedData.date !== today ? { date: today, count: 0 } : savedData;
+      }
 
-        if (savedData.date !== today) {
-          return { date: today, count: 0 };
-        }
-        return savedData;
+      function updateSessionUI() {
+        document.getElementById("session-count-display").innerText =
+          getSessionData().count;
       }
 
       function incrementSession() {
@@ -250,15 +322,8 @@
         localStorage.setItem("tp_session_data", JSON.stringify(data));
         updateSessionUI();
       }
-
-      function updateSessionUI() {
-        const data = getSessionData();
-        document.getElementById("session-count").innerText = data.count;
-        document.getElementById("intel-count").innerText = data.count;
-      }
       updateSessionUI();
 
-      // 3. Timer & Sticky Zen Logic
       let timeLeft = 25 * 60,
         timerId = null;
 
@@ -277,9 +342,9 @@
             } else {
               clearInterval(timerId);
               timerId = null;
-              incrementSession(); // Add to count when done
+              incrementSession();
               body.classList.remove("zen-mode");
-              alert("Deep Work Session Complete.");
+              alert("Session Complete.");
               resetTimer();
             }
           }, 1000);
@@ -304,7 +369,6 @@
         document.body.classList.remove("zen-mode");
       }
 
-      // 4. Task Logic (Remains Persistent)
       const list = document.getElementById("todo-list");
       const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
@@ -327,7 +391,6 @@
           localStorage.getItem("tp_deleted_today") || "[]",
         );
         list.innerHTML = "";
-
         hours.forEach((h) => {
           const key = `tp-${today}-${h}`;
           const task = localStorage.getItem(key);
@@ -335,7 +398,7 @@
             const item = document.createElement("div");
             item.className =
               "text-xs font-mono py-2 border-b border-white/5 flex gap-4 items-center cursor-pointer group";
-            item.innerHTML = `<span class="text-[#b3a577] opacity-40">${h}:00</span> <span class="text-zinc-300">${task}</span>`;
+            item.innerHTML = `<span class="text-[#b3a577] opacity-40 group-hover:opacity-100 transition-opacity">${h}:00</span> <span class="text-zinc-300">${task}</span>`;
             item.onclick = () => removeTask(item, key);
             list.appendChild(item);
           }
@@ -343,7 +406,8 @@
       }
       syncTasksFromPlanner(false);
 
-      const input = document.getElementById("todo-input");
+      const input = document.getElementById("todo-input"),
+        scratch = document.getElementById("scratch");
       input.addEventListener("keypress", (e) => {
         if (e.key === "Enter" && input.value) {
           const item = document.createElement("div");
@@ -353,11 +417,9 @@
           item.onclick = () => item.remove();
           list.appendChild(item);
           input.value = "";
-          document.getElementById("todo-scroll-container").scrollTop = 9999;
+          document.getElementById("todo-scroll-container").scrollTop = 999;
         }
       });
-
-      const scratch = document.getElementById("scratch");
       scratch.value = localStorage.getItem("tp_scratch") || "";
       scratch.oninput = () => localStorage.setItem("tp_scratch", scratch.value);
     </script>
