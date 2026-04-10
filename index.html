@@ -1,427 +1,383 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TP // FocusOS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;400;900&family=JetBrains+Mono:wght@300&display=swap");
-      :root {
-        --bg: #080808;
-        --accent: #b3a577;
-        --panel: #111111;
-      }
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--bg);
-        color: #fff;
-        overflow: hidden;
-        height: 100vh;
-      }
-      .timer-glow {
-        text-shadow: 0 0 80px rgba(179, 165, 119, 0.15);
-      }
 
-      /* --- 360 DEGREE HOVER ROTATION --- */
-      #logo {
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TP // FocusOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;400;900&family=JetBrains+Mono:wght@300&display=swap");
+
+    :root {
+      --bg: #080808;
+      --accent: #b3a577;
+      --panel: #111111;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: var(--bg);
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .timer-glow {
+      text-shadow: 0 0 80px rgba(179, 165, 119, 0.15);
+    }
+
+    /* --- 360 DEGREE HOVER ROTATION --- */
+    /* #logo {
         transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .branding-header:hover #logo {
-        transform: rotate(360deg);
-      }
+      } */
+    .branding-header:hover #logo {
+      transform: rotate(360deg);
+    }
 
-      /* --- HOVER REVEAL SYSTEM --- */
-      .branding-header .reveal-content {
-        opacity: 0;
-        transform: translateX(-15px);
-        transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-        pointer-events: none;
-      }
+    /* --- HOVER REVEAL SYSTEM --- */
+    .branding-header .reveal-content {
+      opacity: 0;
+      transform: translateX(-15px);
+      transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+      pointer-events: none;
+    }
 
-      .branding-header:hover .reveal-content {
-        opacity: 1;
-        transform: translateX(0);
-        pointer-events: auto;
-      }
+    .branding-header:hover .reveal-content {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
 
-      /* Zen Mode */
-      .zen-mode aside,
-      .zen-mode .branding-header,
-      .zen-mode .dock-links {
-        opacity: 0 !important;
-        pointer-events: none;
-        transition: opacity 0.4s ease;
-      }
-      .zen-mode main {
-        background: #000 !important;
-        width: 100vw;
-        transition: all 0.5s ease;
-      }
-      .zen-mode #timer-display {
-        transform: scale(1.1);
-        transition: transform 0.6s ease;
-      }
+    /* Zen Mode */
+    .zen-mode aside,
+    .zen-mode .branding-header,
+    .zen-mode .dock-links {
+      opacity: 0 !important;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
 
-      /* UI Elements */
-      .nav-link {
-        font-size: 10px;
-        font-family: "JetBrains Mono", monospace;
-        letter-spacing: 0.2em;
-        color: #444;
-        transition: 0.3s;
-        text-transform: uppercase;
-      }
-      .nav-link:hover {
-        color: var(--accent);
-      }
-      .input-clean {
-        background: transparent;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        outline: none;
-        transition: 0.3s;
-      }
-      .input-clean:focus {
-        border-bottom-color: var(--accent);
-      }
-      .custom-scroll::-webkit-scrollbar {
-        width: 2px;
-      }
-      .custom-scroll::-webkit-scrollbar-thumb {
-        background: var(--accent);
-      }
-      .dock-item {
-        transition: 0.3s;
-        color: rgba(255, 255, 255, 0.4);
-        font-family: "JetBrains Mono", monospace;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-      }
-      .dock-item:hover {
-        color: var(--accent);
-        letter-spacing: 0.4em;
-      }
-    </style>
-  </head>
-  <body class="flex">
-    <main
-      class="flex-grow flex flex-col p-12 relative transition-all duration-500"
-    >
-      <div
-        class="branding-header flex items-center gap-6 opacity-80 relative z-[100] w-fit cursor-pointer"
-      >
-        <div
-          id="logo"
-          class="text-xl font-black italic tracking-tighter uppercase select-none"
-        >
-          Tp
-        </div>
+    .zen-mode main {
+      background: #000 !important;
+      width: 100vw;
+      transition: all 0.5s ease;
+    }
 
-        <div class="reveal-content flex items-center gap-6">
-          <div class="h-6 w-[2px] bg-white/50"></div>
-          <div class="flex items-center gap-6">
-            <a href="./pages/valute.html" class="nav-link text-white">Vault</a>
-            <a href="./pages/expenses.html" class="nav-link text-white">Expenses</a>
-            <a href="./pages/notes.html" class="nav-link text-white">Notes</a>
-            <a href="./pages/habits.html" class="nav-link text-white">Habits</a>
-            <span class="text-[8px] text-zinc-800 font-mono tracking-widest"
-              >// SECURE_SESSION</span
-            >
-          </div>
-        </div>
+    .zen-mode #timer-display {
+      transform: scale(1.1);
+      transition: transform 0.6s ease;
+    }
+
+    /* UI Elements */
+    .nav-link {
+      font-size: 10px;
+      font-family: "JetBrains Mono", monospace;
+      letter-spacing: 0.2em;
+      color: #444;
+      transition: 0.3s;
+      text-transform: uppercase;
+    }
+
+    .nav-link:hover {
+      color: var(--accent);
+    }
+
+    .input-clean {
+      background: transparent;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .input-clean:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: var(--accent);
+    }
+
+    .dock-item {
+      transition: 0.3s;
+      color: rgba(255, 255, 255, 0.4);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .dock-item:hover {
+      color: var(--accent);
+      letter-spacing: 0.4em;
+    }
+  </style>
+</head>
+
+<body class="flex">
+  <main class="flex-grow flex flex-col p-12 relative transition-all duration-500">
+    <div class="branding-header flex items-center gap-6 opacity-80 relative z-[100] w-fit cursor-pointer">
+      <div id="logo" class="text-xl font-black italic tracking-tighter uppercase select-none">
+        Tp
       </div>
 
-      <div class="flex-grow flex flex-col items-center justify-center">
-        <p
-          id="timer-label"
-          class="text-[10px] tracking-[0.8em] text-[#b3a577] mb-4 uppercase font-mono"
-        >
-          Deep Work Session
+      <div class="reveal-content flex items-center gap-6">
+        <div class="h-6 w-[2px] bg-white/50"></div>
+        <div class="flex items-center gap-6">
+          <a href="./pages/dayflow.html" class="nav-link text-white">Dayflow</a>
+          <a href="./pages/valute.html" class="nav-link text-white">Vault</a>
+          <a href="./pages/expenses.html" class="nav-link text-white">Expenses</a>
+          <a href="./pages/notes.html" class="nav-link text-white">Notes</a>
+          <a href="./pages/habits.html" class="nav-link text-white">Habits</a>
+          <span class="text-[8px] text-zinc-800 font-mono tracking-widest">// SECURE_SESSION</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-grow flex flex-col items-center justify-center">
+      <p id="timer-label" class="text-[10px] tracking-[0.8em] text-[#b3a577] mb-4 uppercase font-mono">
+        Deep Work Session
+      </p>
+      <h1 id="timer-display" class="text-[14rem] font-black tracking-tighter timer-glow leading-none">
+        25:00
+      </h1>
+
+      <div class="mt-4 mb-8 flex items-center gap-3">
+        <span class="h-[1px] w-8 bg-white/10"></span>
+        <p class="text-[10px] font-mono tracking-[0.4em] text-zinc-500 uppercase">
+          Sessions:
+          <span id="session-count-display" class="text-[#b3a577] font-bold">0</span>
+          / 3
         </p>
-        <h1
-          id="timer-display"
-          class="text-[14rem] font-black tracking-tighter timer-glow leading-none"
-        >
-          25:00
-        </h1>
+        <span class="h-[1px] w-8 bg-white/10"></span>
+      </div>
 
-        <div class="mt-4 mb-8 flex items-center gap-3">
-          <span class="h-[1px] w-8 bg-white/10"></span>
-          <p
-            class="text-[10px] font-mono tracking-[0.4em] text-zinc-500 uppercase"
-          >
-            Sessions:
-            <span id="session-count-display" class="text-[#b3a577] font-bold"
-              >0</span
-            >
-            / 3
+      <div id="controls-row" class="flex gap-12 relative z-50">
+        <button onclick="toggleTimer()" id="main-action"
+          class="text-sm tracking-[0.4em] uppercase hover:text-[#b3a577] transition duration-500 font-bold">
+          Start_Session
+        </button>
+        <button onclick="resetTimer()"
+          class="text-sm tracking-[0.4em] uppercase text-zinc-700 hover:text-white transition duration-500 font-bold">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <div class="dock-links flex items-center gap-8 overflow-hidden py-4">
+      <div class="flex items-center gap-3 pr-4">
+        <div class="w-1.5 h-1.5 rounded-full bg-[#b3a577] animate-pulse"></div>
+        <span class="text-[10px] font-black tracking-[0.3em] text-[#b3a577] uppercase">NETWORK_DOCK
+          <span class="text-[10px] text-[#b3a577] font-mono font-bold tracking-widest">>></span></span>
+      </div>
+      <div class="flex items-center gap-10">
+        <a href="https://github.com" target="_blank" class="dock-item">GitHub</a>
+        <a href="https://gemini.google.com" target="_blank" class="dock-item">Gemini</a>
+        <a href="https://chat.openai.com" target="_blank" class="dock-item">ChatGPT</a>
+        <a href="https://youtube.com" target="_blank" class="dock-item">YouTube</a>
+      </div>
+    </div>
+  </main>
+
+  <aside class="w-[400px] bg-[#111] border-l border-white/5 flex flex-col p-10 h-full">
+    <div class="flex justify-between items-center mb-16">
+      <div>
+        <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
+          Region
+        </p>
+        <p class="text-lg font-light">
+          Surat, <span class="text-[#b3a577]">IN</span>
+        </p>
+      </div>
+      <div class="text-right">
+        <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
+          Clock
+        </p>
+        <p id="clock" class="text-lg font-light font-mono uppercase"></p>
+      </div>
+    </div>
+
+    <div class="flex-grow flex flex-col gap-12 overflow-y-auto custom-scroll pr-4">
+      <div>
+        <div class="flex justify-between items-center mb-6">
+          <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em]">
+            today-task
           </p>
-          <span class="h-[1px] w-8 bg-white/10"></span>
-        </div>
-
-        <div id="controls-row" class="flex gap-12 relative z-50">
-          <button
-            onclick="toggleTimer()"
-            id="main-action"
-            class="text-sm tracking-[0.4em] uppercase hover:text-[#b3a577] transition duration-500 font-bold"
-          >
-            Start_Session
+          <button onclick="syncTasksFromPlanner(true)"
+            class="text-[8px] text-[#b3a577] hover:text-white uppercase font-bold tracking-widest">
+            Sync
           </button>
-          <button
-            onclick="resetTimer()"
-            class="text-sm tracking-[0.4em] uppercase text-zinc-700 hover:text-white transition duration-500 font-bold"
-          >
-            Reset
-          </button>
         </div>
+        <div class="h-[108px] overflow-y-auto custom-scroll pr-2" id="todo-scroll-container">
+          <div id="todo-list" class="space-y-0"></div>
+        </div>
+        <input type="text" id="todo-input" placeholder="+"
+          class="w-full mt-4 py-2 input-clean text-sm font-mono text-[#b3a577]" />
       </div>
 
-      <div class="dock-links flex items-center gap-8 overflow-hidden py-4">
-        <div class="flex items-center gap-3 pr-4">
-          <div
-            class="w-1.5 h-1.5 rounded-full bg-[#b3a577] animate-pulse"
-          ></div>
-          <span
-            class="text-[10px] font-black tracking-[0.3em] text-[#b3a577] uppercase"
-            >NETWORK_DOCK
-            <span
-              class="text-[10px] text-[#b3a577] font-mono font-bold tracking-widest"
-              >>></span
-            ></span
-          >
-        </div>
-        <div class="flex items-center gap-10">
-          <a href="https://github.com" target="_blank" class="dock-item"
-            >GitHub</a
-          >
-          <a href="https://gemini.google.com" target="_blank" class="dock-item"
-            >Gemini</a
-          >
-          <a href="https://chat.openai.com" target="_blank" class="dock-item"
-            >ChatGPT</a
-          >
-          <a href="https://youtube.com" target="_blank" class="dock-item"
-            >YouTube</a
-          >
-        </div>
+      <div class="flex-grow">
+        <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-4">
+          Scratchpad
+        </p>
+        <textarea id="scratch"
+          class="w-full h-48 bg-transparent border-none text-zinc-400 text-xs font-mono leading-relaxed outline-none resize-none"
+          placeholder="// Thoughts..."></textarea>
       </div>
-    </main>
+    </div>
 
-    <aside
-      class="w-[400px] bg-[#111] border-l border-white/5 flex flex-col p-10 h-full"
-    >
-      <div class="flex justify-between items-center mb-16">
-        <div>
-          <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
-            Region
-          </p>
-          <p class="text-lg font-light">
-            Surat, <span class="text-[#b3a577]">IN</span>
-          </p>
-        </div>
-        <div class="text-right">
-          <p class="text-[10px] text-zinc-600 uppercase tracking-widest">
-            Clock
-          </p>
-          <p id="clock" class="text-lg font-light font-mono uppercase"></p>
-        </div>
+    <div class="mt-8 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+        <span class="text-[9px] font-mono text-zinc-500 uppercase">Link_Secure</span>
       </div>
+      <a href="planner.html"
+        class="text-[9px] font-bold text-[#b3a577] hover:tracking-[0.2em] transition-all uppercase">Open_Planner</a>
+    </div>
+  </aside>
 
-      <div
-        class="flex-grow flex flex-col gap-12 overflow-y-auto custom-scroll pr-4"
-      >
-        <div>
-          <div class="flex justify-between items-center mb-6">
-            <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em]">
-              today-task
-            </p>
-            <button
-              onclick="syncTasksFromPlanner(true)"
-              class="text-[8px] text-[#b3a577] hover:text-white uppercase font-bold tracking-widest"
-            >
-              Sync
-            </button>
-          </div>
-          <div
-            class="h-[108px] overflow-y-auto custom-scroll pr-2"
-            id="todo-scroll-container"
-          >
-            <div id="todo-list" class="space-y-0"></div>
-          </div>
-          <input
-            type="text"
-            id="todo-input"
-            placeholder="+"
-            class="w-full mt-4 py-2 input-clean text-sm font-mono text-[#b3a577]"
-          />
-        </div>
+  <script>
+    lucide.createIcons();
 
-        <div class="flex-grow">
-          <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-4">
-            Scratchpad
-          </p>
-          <textarea
-            id="scratch"
-            class="w-full h-48 bg-transparent border-none text-zinc-400 text-xs font-mono leading-relaxed outline-none resize-none"
-            placeholder="// Thoughts..."
-          ></textarea>
-        </div>
-      </div>
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").innerText = now.toLocaleTimeString(
+        [],
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        },
+      );
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-      <div class="mt-8 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          <span class="text-[9px] font-mono text-zinc-500 uppercase"
-            >Link_Secure</span
-          >
-        </div>
-        <a
-          href="planner.html"
-          class="text-[9px] font-bold text-[#b3a577] hover:tracking-[0.2em] transition-all uppercase"
-          >Open_Planner</a
-        >
-      </div>
-    </aside>
+    function getSessionData() {
+      const today = new Date().toDateString();
+      const savedData = JSON.parse(
+        localStorage.getItem("tp_session_data") || '{"date": "", "count": 0}',
+      );
+      return savedData.date !== today ? { date: today, count: 0 } : savedData;
+    }
 
-    <script>
-      lucide.createIcons();
+    function updateSessionUI() {
+      document.getElementById("session-count-display").innerText =
+        getSessionData().count;
+    }
 
-      function updateClock() {
-        const now = new Date();
-        document.getElementById("clock").innerText = now.toLocaleTimeString(
-          [],
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true,
-          },
-        );
-      }
-      setInterval(updateClock, 1000);
-      updateClock();
-
-      function getSessionData() {
-        const today = new Date().toDateString();
-        const savedData = JSON.parse(
-          localStorage.getItem("tp_session_data") || '{"date": "", "count": 0}',
-        );
-        return savedData.date !== today ? { date: today, count: 0 } : savedData;
-      }
-
-      function updateSessionUI() {
-        document.getElementById("session-count-display").innerText =
-          getSessionData().count;
-      }
-
-      function incrementSession() {
-        let data = getSessionData();
-        data.count++;
-        localStorage.setItem("tp_session_data", JSON.stringify(data));
-        updateSessionUI();
-      }
+    function incrementSession() {
+      let data = getSessionData();
+      data.count++;
+      localStorage.setItem("tp_session_data", JSON.stringify(data));
       updateSessionUI();
+    }
+    updateSessionUI();
 
-      let timeLeft = 25 * 60,
-        timerId = null;
+    let timeLeft = 25 * 60,
+      timerId = null;
 
-      function toggleTimer() {
-        const btn = document.getElementById("main-action"),
-          body = document.body;
-        if (timerId) {
-          clearInterval(timerId);
-          timerId = null;
-          btn.innerText = "Resume_Session";
-        } else {
-          timerId = setInterval(() => {
-            if (timeLeft > 0) {
-              timeLeft--;
-              updateDisplay();
-            } else {
-              clearInterval(timerId);
-              timerId = null;
-              incrementSession();
-              body.classList.remove("zen-mode");
-              alert("Session Complete.");
-              resetTimer();
-            }
-          }, 1000);
-          btn.innerText = "Pause_Flow";
-          body.classList.add("zen-mode");
-        }
-      }
-
-      function updateDisplay() {
-        const mins = Math.floor(timeLeft / 60),
-          secs = timeLeft % 60;
-        document.getElementById("timer-display").innerText =
-          `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-      }
-
-      function resetTimer() {
+    function toggleTimer() {
+      const btn = document.getElementById("main-action"),
+        body = document.body;
+      if (timerId) {
         clearInterval(timerId);
         timerId = null;
-        timeLeft = 25 * 60;
-        updateDisplay();
-        document.getElementById("main-action").innerText = "Start_Session";
-        document.body.classList.remove("zen-mode");
-      }
-
-      const list = document.getElementById("todo-list");
-      const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-
-      function removeTask(element, taskKey) {
-        element.remove();
-        let deleted = JSON.parse(
-          localStorage.getItem("tp_deleted_today") || "[]",
-        );
-        if (taskKey && !deleted.includes(taskKey)) {
-          deleted.push(taskKey);
-          localStorage.setItem("tp_deleted_today", JSON.stringify(deleted));
-        }
-      }
-
-      function syncTasksFromPlanner(forceReload = false) {
-        const today = days[new Date().getDay()];
-        const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
-        if (forceReload) localStorage.removeItem("tp_deleted_today");
-        const deletedToday = JSON.parse(
-          localStorage.getItem("tp_deleted_today") || "[]",
-        );
-        list.innerHTML = "";
-        hours.forEach((h) => {
-          const key = `tp-${today}-${h}`;
-          const task = localStorage.getItem(key);
-          if (task && task.trim() !== "" && !deletedToday.includes(key)) {
-            const item = document.createElement("div");
-            item.className =
-              "text-xs font-mono py-2 border-b border-white/5 flex gap-4 items-center cursor-pointer group";
-            item.innerHTML = `<span class="text-[#b3a577] opacity-40 group-hover:opacity-100 transition-opacity">${h}:00</span> <span class="text-zinc-300">${task}</span>`;
-            item.onclick = () => removeTask(item, key);
-            list.appendChild(item);
+        btn.innerText = "Resume_Session";
+      } else {
+        timerId = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+          } else {
+            clearInterval(timerId);
+            timerId = null;
+            incrementSession();
+            body.classList.remove("zen-mode");
+            alert("Session Complete.");
+            resetTimer();
           }
-        });
+        }, 1000);
+        btn.innerText = "Pause_Flow";
+        body.classList.add("zen-mode");
       }
-      syncTasksFromPlanner(false);
+    }
 
-      const input = document.getElementById("todo-input"),
-        scratch = document.getElementById("scratch");
-      input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter" && input.value) {
+    function updateDisplay() {
+      const mins = Math.floor(timeLeft / 60),
+        secs = timeLeft % 60;
+      document.getElementById("timer-display").innerText =
+        `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+    }
+
+    function resetTimer() {
+      clearInterval(timerId);
+      timerId = null;
+      timeLeft = 25 * 60;
+      updateDisplay();
+      document.getElementById("main-action").innerText = "Start_Session";
+      document.body.classList.remove("zen-mode");
+    }
+
+    const list = document.getElementById("todo-list");
+    const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+    function removeTask(element, taskKey) {
+      element.remove();
+      let deleted = JSON.parse(
+        localStorage.getItem("tp_deleted_today") || "[]",
+      );
+      if (taskKey && !deleted.includes(taskKey)) {
+        deleted.push(taskKey);
+        localStorage.setItem("tp_deleted_today", JSON.stringify(deleted));
+      }
+    }
+
+    function syncTasksFromPlanner(forceReload = false) {
+      const today = days[new Date().getDay()];
+      const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+      if (forceReload) localStorage.removeItem("tp_deleted_today");
+      const deletedToday = JSON.parse(
+        localStorage.getItem("tp_deleted_today") || "[]",
+      );
+      list.innerHTML = "";
+      hours.forEach((h) => {
+        const key = `tp-${today}-${h}`;
+        const task = localStorage.getItem(key);
+        if (task && task.trim() !== "" && !deletedToday.includes(key)) {
           const item = document.createElement("div");
           item.className =
-            "text-xs font-mono py-2 border-b border-white/5 flex gap-4 items-center cursor-pointer";
-          item.innerHTML = `<span class="text-[#b3a577]">>></span> ${input.value}`;
-          item.onclick = () => item.remove();
+            "text-xs font-mono py-2 border-b border-white/5 flex gap-4 items-center cursor-pointer group";
+          item.innerHTML = `<span class="text-[#b3a577] opacity-40 group-hover:opacity-100 transition-opacity">${h}:00</span> <span class="text-zinc-300">${task}</span>`;
+          item.onclick = () => removeTask(item, key);
           list.appendChild(item);
-          input.value = "";
-          document.getElementById("todo-scroll-container").scrollTop = 999;
         }
       });
-      scratch.value = localStorage.getItem("tp_scratch") || "";
-      scratch.oninput = () => localStorage.setItem("tp_scratch", scratch.value);
-    </script>
-  </body>
+    }
+    syncTasksFromPlanner(false);
+
+    const input = document.getElementById("todo-input"),
+      scratch = document.getElementById("scratch");
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && input.value) {
+        const item = document.createElement("div");
+        item.className =
+          "text-xs font-mono py-2 border-b border-white/5 flex gap-4 items-center cursor-pointer";
+        item.innerHTML = `<span class="text-[#b3a577]">>></span> ${input.value}`;
+        item.onclick = () => item.remove();
+        list.appendChild(item);
+        input.value = "";
+        document.getElementById("todo-scroll-container").scrollTop = 999;
+      }
+    });
+    scratch.value = localStorage.getItem("tp_scratch") || "";
+    scratch.oninput = () => localStorage.setItem("tp_scratch", scratch.value);
+  </script>
+</body>
+
 </html>

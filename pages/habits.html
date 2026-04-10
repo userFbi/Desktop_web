@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Habit_Grid // FocusOS</title>
+  <title>FocusOS // Habit_Engine_v5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&display=swap");
@@ -19,14 +19,14 @@
       background: var(--bg);
       color: #fff;
       font-family: "JetBrains Mono", monospace;
-      padding: 3rem;
+      padding: 2rem;
       margin: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* Clean Grid Layout */
     .habit-grid {
       display: grid;
-      grid-template-columns: 220px repeat(7, 1fr);
+      grid-template-columns: 180px repeat(7, 1fr);
       border-top: 1px solid var(--border);
       border-left: 1px solid var(--border);
     }
@@ -34,20 +34,31 @@
     .grid-cell {
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 1.2rem;
+      padding: 1rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       font-size: 10px;
-      text-transform: uppercase;
+    }
+
+    .day-cell {
+      cursor: pointer;
+      height: 65px;
+      transition: 0.2s;
+    }
+
+    .day-cell:active {
+      background: #111;
     }
 
     .habit-name-cell {
-      justify-content: flex-start;
+      justify-content: space-between;
+      flex-direction: row;
       color: #666;
       background: #0a0a0a;
       font-size: 9px;
-      letter-spacing: 1px;
+      padding: 0 15px;
     }
 
     .day-header {
@@ -55,18 +66,7 @@
       font-weight: 800;
       background: #050505;
       letter-spacing: 2px;
-    }
-
-    /* Icon Toggles */
-    .status-icon {
-      cursor: pointer;
-      font-size: 14px;
-      transition: transform 0.1s ease;
-      user-select: none;
-    }
-
-    .status-icon:active {
-      transform: scale(0.9);
+      height: 40px;
     }
 
     .icon-right {
@@ -76,11 +76,29 @@
 
     .icon-wrong {
       color: #222;
-      /* Dimmed so it's not irritating */
-      opacity: 0.5;
+      opacity: 0.3;
     }
 
-    /* UI Elements */
+    /* Monthly Progress Section */
+    .monthly-insight {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px dashed #222;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background: #111;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 1s ease-out;
+    }
+
     .input-group {
       display: flex;
       border: 1px solid var(--border);
@@ -95,7 +113,7 @@
       color: var(--accent);
       font-size: 10px;
       outline: none;
-      width: 200px;
+      width: 180px;
       text-transform: uppercase;
     }
 
@@ -112,22 +130,22 @@
 
 <body>
   <header class="mb-10">
-    <a href="index.html"
-      class="text-[9px] text-[#b3a577] tracking-[0.4em] uppercase mb-10 block opacity-40 hover:opacity-100 transition">
+    <a href="/index.html"
+      class="text-[9px] text-[#b3a577] tracking-[0.4em] uppercase mb-10 block opacity-40 hover:opacity-100">
       << Return_to_Core </a>
         <h1 class="text-lg font-black tracking-tighter uppercase opacity-30">
-          Protocol_Grid // Logic_Mode
+          Habit_Engine // Cycle_v5
         </h1>
   </header>
 
   <div class="input-group">
-    <input type="text" id="habit-input" placeholder="New_Protocol..." class="input-area"
+    <input type="text" id="habit-input" placeholder="Initiate_New_Protocol..." class="input-area"
       onkeypress="if(event.key==='Enter') addHabit()">
     <button onclick="addHabit()" class="deploy-btn">Add</button>
   </div>
 
   <div class="habit-grid" id="main-grid">
-    <div class="grid-cell day-header">Identifier</div>
+    <div class="grid-cell day-header">Protocol</div>
     <div class="grid-cell day-header">M</div>
     <div class="grid-cell day-header">T</div>
     <div class="grid-cell day-header">W</div>
@@ -137,28 +155,61 @@
     <div class="grid-cell day-header">S</div>
   </div>
 
-  <div class="mt-8">
+  <section class="monthly-insight">
+    <h2 class="text-[9px] text-zinc-600 uppercase tracking-[0.4em] mb-6">Monthly_Consistency_Matrix</h2>
+    <div id="monthly-stats-container"></div>
+  </section>
+
+  <div class="mt-12">
     <button onclick="clearAll()"
       class="text-[8px] text-zinc-900 hover:text-red-900 uppercase tracking-widest transition">
-      [ Wipe_System_Data ]
+      [ Hard_Reset_Database ]
     </button>
   </div>
 
   <script>
-    let habitData = JSON.parse(localStorage.getItem('focus_grid_v3')) || [
-      { id: 1, name: "DEEP_WORK", checks: [true, true, false, false, false, false, false] },
-      { id: 2, name: "SYSTEM_AUDIT", checks: [false, true, true, false, false, false, false] }
-    ];
+    // Utility to get current week number
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+
+    let state = JSON.parse(localStorage.getItem('focus_habit_v5')) || {
+      lastWeek: getWeekNumber(new Date()),
+      habits: [],
+      history: {} // Format: { "HabitName": [score1, score2, score3, score4] }
+    };
+
+    function checkWeekReset() {
+      const currentWeek = getWeekNumber(new Date());
+      if (currentWeek !== state.lastWeek) {
+        // New week detected! Store current scores in history before resetting
+        state.habits.forEach(h => {
+          const score = (h.checks.filter(c => c).length / 7) * 100;
+          if (!state.history[h.name]) state.history[h.name] = [];
+          state.history[h.name].push(score);
+          // Keep only last 4 weeks of history
+          if (state.history[h.name].length > 4) state.history[h.name].shift();
+
+          // Clear current checks
+          h.checks = [false, false, false, false, false, false, false];
+        });
+        state.lastWeek = currentWeek;
+        save();
+      }
+    }
 
     function save() {
-      localStorage.setItem('focus_grid_v3', JSON.stringify(habitData));
+      localStorage.setItem('focus_habit_v5', JSON.stringify(state));
       render();
     }
 
     function addHabit() {
       const input = document.getElementById('habit-input');
       if (!input.value) return;
-      habitData.push({
+      state.habits.push({
         id: Date.now(),
         name: input.value.replace(/\s+/g, '_').toUpperCase(),
         checks: [false, false, false, false, false, false, false]
@@ -168,7 +219,7 @@
     }
 
     function toggleDay(habitId, dayIndex) {
-      const habit = habitData.find(h => h.id === habitId);
+      const habit = state.habits.find(h => h.id === habitId);
       if (habit) {
         habit.checks[dayIndex] = !habit.checks[dayIndex];
         save();
@@ -176,42 +227,69 @@
     }
 
     function deleteHabit(id) {
-      habitData = habitData.filter(h => h.id !== id);
-      save();
+      if (confirm("Purge Protocol?")) {
+        state.habits = state.habits.filter(h => h.id !== id);
+        save();
+      }
     }
 
     function clearAll() {
-      if (confirm("Protocol: Wipe all data?")) { habitData = []; save(); }
+      if (confirm("Total Wipe?")) {
+        state = { lastWeek: getWeekNumber(new Date()), habits: [], history: {} };
+        save();
+      }
     }
 
     function render() {
       const grid = document.getElementById('main-grid');
+      const statsContainer = document.getElementById('monthly-stats-container');
+
+      // Render Grid
       const headers = Array.from(grid.children).slice(0, 8);
       grid.innerHTML = '';
       headers.forEach(h => grid.appendChild(h));
 
-      habitData.forEach(habit => {
+      statsContainer.innerHTML = '';
+
+      state.habits.forEach(habit => {
+        // Add to Grid
         const nameCell = document.createElement('div');
         nameCell.className = 'grid-cell habit-name-cell';
-        nameCell.innerHTML = `<span class="mr-3 opacity-10 hover:opacity-100 cursor-pointer text-white" onclick="deleteHabit(${habit.id})">×</span> ${habit.name}`;
+        nameCell.innerHTML = `<span>${habit.name}</span><span class="cursor-pointer opacity-30 hover:text-red-900" onclick="deleteHabit(${habit.id})">×</span>`;
         grid.appendChild(nameCell);
 
         habit.checks.forEach((checked, index) => {
           const cell = document.createElement('div');
-          cell.className = 'grid-cell';
-
-          const icon = document.createElement('div');
-          icon.className = `status-icon ${checked ? 'icon-right' : 'icon-wrong'}`;
-          // Using standard symbols for a cleaner tech look
-          icon.innerText = checked ? '✔' : '✖';
-
-          icon.onclick = () => toggleDay(habit.id, index);
-          cell.appendChild(icon);
+          cell.className = 'grid-cell day-cell';
+          cell.onclick = () => toggleDay(habit.id, index);
+          cell.innerHTML = `<div class="status-icon ${checked ? 'icon-right' : 'icon-wrong'}">${checked ? '✔' : '✖'}</div>`;
           grid.appendChild(cell);
         });
+
+        // Render Monthly Stats
+        const pastScores = state.history[habit.name] || [];
+        const currentScore = (habit.checks.filter(c => c).length / 7) * 100;
+        const totalAvg = pastScores.length > 0
+          ? (pastScores.reduce((a, b) => a + b, 0) + currentScore) / (pastScores.length + 1)
+          : currentScore;
+
+        const statRow = document.createElement('div');
+        statRow.className = 'mb-6';
+        statRow.innerHTML = `
+          <div class="flex justify-between text-[10px] text-zinc-500 uppercase mb-1">
+            <span>${habit.name}</span>
+            <span>Avg_Consitency: ${Math.round(totalAvg)}%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-fill" style="width: ${totalAvg}%"></div>
+          </div>
+        `;
+        statsContainer.appendChild(statRow);
       });
     }
 
+    // Initialize
+    checkWeekReset();
     render();
   </script>
 </body>

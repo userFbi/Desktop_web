@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DayFlow // FocusOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&display=swap");
+
+        :root {
+            --bg: #080808;
+            --accent: #b3a577;
+            --panel: #0d0d0d;
+            --border: #151515;
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: "JetBrains Mono", monospace;
+            padding: 2rem;
+            margin: 0;
+        }
+
+        /* FLEXIBLE GRID: Row 1 now grows with content (auto) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-rows: auto 320px;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            height: 100%;
+        }
+
+        .panel-header {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #444;
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* CALENDAR: Compact date cells to ensure terminal fits */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border);
+        }
+
+        .cal-date {
+            height: 46px;
+            background: var(--panel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s;
+        }
+
+        .cal-date:hover {
+            background: #111;
+        }
+
+        .selected-date {
+            background: #1a1a1a !important;
+            color: var(--accent);
+            box-shadow: inset 0 0 0 1px var(--accent);
+        }
+
+        .today {
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        .has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* INPUT TERMINAL */
+        input {
+            background: #050505;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            color: var(--accent);
+            font-size: 10px;
+            outline: none;
+            min-width: 0;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-assign {
+            background: var(--accent);
+            color: #000;
+            padding: 0 1.5rem;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+
+        .btn-assign:hover {
+            background: #fff;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="flex justify-between items-end max-w-[1200px] mx-auto mb-8">
+        <div>
+            <a href="/index.html"
+                class="text-[9px] text-[#b3a577] tracking-[0.4em] uppercase opacity-40 hover:opacity-100 transition">
+                << Return</a>
+                    <h1 class="text-xl font-black uppercase tracking-tighter mt-2">DailyFlow / Protocol</h1>
+        </div>
+        <div id="live-clock" class="text-lg font-light opacity-40">00:00:00</div>
+    </header>
+
+    <main class="dashboard-grid">
+
+        <section class="panel">
+            <div class="panel-header">
+                <span>Calendar_Protocol</span>
+                <span id="active-date-label" class="text-[#b3a577] animate-pulse">Select_Date</span>
+            </div>
+
+            <div class="calendar-grid mb-6" id="calendar-body">
+                <div class="text-[9px] text-[#333] text-center p-2">M</div>
+                <div class="text-[9px] text-[#333] text-center p-2">T</div>
+                <div class="text-[9px] text-[#333] text-center p-2">W</div>
+                <div class="text-[9px] text-[#333] text-center p-2">T</div>
+                <div class="text-[9px] text-[#333] text-center p-2">F</div>
+                <div class="text-[9px] text-[#333] text-center p-2">S</div>
+                <div class="text-[9px] text-[#333] text-center p-2">S</div>
+            </div>
+
+            <div class="mt-auto pt-4 border-t border-[#151515]">
+                <div class="flex justify-between items-center mb-3">
+                    <span id="event-status"
+                        class="text-[10px] text-zinc-600 uppercase truncate pr-4">System_Idle...</span>
+                    <div id="event-actions" class="hidden flex gap-3 text-[9px] font-bold">
+                        <span class="cursor-pointer text-[#b3a577]" onclick="editEvent()">[EDIT]</span>
+                        <span class="cursor-pointer text-red-900" onclick="deleteEvent()">[DELETE]</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <!-- <span class="text-[8px] text-zinc-700 tracking-[0.3em]">LOG_COMMAND:</span> -->
+                    <div class="flex gap-2">
+                        <input type="text" id="event-input" class="flex-1 p-2" placeholder="Type_Task_Details..."
+                            onkeypress="if(event.key==='Enter') saveEvent()">
+                        <button onclick="saveEvent()" class="btn-assign">Assign</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">Active_Reminders</div>
+            <div id="reminder-list" class="overflow-y-auto h-full space-y-1 pr-2"></div>
+            <input type="text" id="rem-input" class="mt-4 p-2" placeholder="Deploy_Reminder..."
+                onkeypress="if(event.key==='Enter') addReminder()">
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">Savings_Registry</div>
+            <div class="flex h-full overflow-hidden">
+                <div class="flex-1 flex flex-col justify-center">
+                    <div class="text-[32px] font-black text-[#b3a577] leading-none" id="total-savings">₹0.00</div>
+                    <div class="text-[8px] text-zinc-700 mt-2 tracking-[0.3em]">MONTHLY_LIQUID_ASSETS</div>
+                    <input type="number" id="save-amount" class="mt-8 w-32 p-2" placeholder="Amt">
+                    <button onclick="addSavings()"
+                        class="mt-2 w-32 bg-[#b3a577] text-black py-2 font-black text-[9px] uppercase hover:bg-white transition-all">Deposit</button>
+                </div>
+                <div class="flex-none w-[140px] border-l border-[#151515] ml-4 pl-4 overflow-y-auto" id="ledger-list">
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">Directive</div>
+            <div class="flex items-center h-full">
+                <p class="text-sm italic text-zinc-600 leading-relaxed" id="quote-display"></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let flowState = JSON.parse(localStorage.getItem('dayflow_v3')) || {
+            reminders: ["Initial Boot Processed"],
+            savings: [],
+            events: {},
+            selectedDate: new Date().getDate()
+        };
+
+        const save = () => { localStorage.setItem('dayflow_v3', JSON.stringify(flowState)); render(); };
+
+        function initCalendar() {
+            const cal = document.getElementById('calendar-body');
+            const headers = Array.from(cal.children).slice(0, 7);
+            cal.innerHTML = '';
+            headers.forEach(h => cal.appendChild(h));
+
+            for (let i = 1; i <= 30; i++) {
+                const div = document.createElement('div');
+                div.className = `cal-date ${i === new Date().getDate() ? 'today' : ''} ${flowState.events[i] ? 'has-event' : ''} ${i === flowState.selectedDate ? 'selected-date' : ''}`;
+                div.innerText = i.toString().padStart(2, '0');
+                div.onclick = () => selectDate(i);
+                cal.appendChild(div);
+            }
+        }
+
+        function selectDate(d) {
+            flowState.selectedDate = d;
+            const event = flowState.events[d];
+            document.getElementById('active-date-label').innerText = `DATE_${d.toString().padStart(2, '0')}`;
+            document.getElementById('event-status').innerText = event ? `PROTOCOL: ${event}` : "NO_TASK_ASSIGNED";
+
+            const actionZone = document.getElementById('event-actions');
+            event ? actionZone.classList.remove('hidden') : actionZone.classList.add('hidden');
+            initCalendar();
+        }
+
+        function saveEvent() {
+            const input = document.getElementById('event-input');
+            if (!input.value) return;
+            flowState.events[flowState.selectedDate] = input.value;
+            input.value = '';
+            save();
+            selectDate(flowState.selectedDate);
+        }
+
+        function editEvent() {
+            document.getElementById('event-input').value = flowState.events[flowState.selectedDate];
+            document.getElementById('event-input').focus();
+        }
+
+        function deleteEvent() {
+            if (confirm("Confirm Removal?")) {
+                delete flowState.events[flowState.selectedDate];
+                save();
+                selectDate(flowState.selectedDate);
+            }
+        }
+
+        function addSavings() {
+            const input = document.getElementById('save-amount');
+            if (!input.value) return;
+            flowState.savings.unshift({
+                amount: parseFloat(input.value),
+                date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })
+            });
+            input.value = '';
+            save();
+        }
+
+        function addReminder() {
+            const input = document.getElementById('rem-input');
+            if (!input.value) return;
+            flowState.reminders.push(input.value);
+            input.value = '';
+            save();
+        }
+
+        function render() {
+            document.getElementById('reminder-list').innerHTML = flowState.reminders.map((r, i) => `
+                <div class="flex justify-between items-center bg-[#050505] p-3 border border-white/5 text-[10px]">
+                    <span>${r}</span>
+                    <span onclick="flowState.reminders.splice(${i},1); save()" class="cursor-pointer opacity-20">×</span>
+                </div>`).join('');
+
+            let total = flowState.savings.reduce((acc, curr) => acc + curr.amount, 0);
+            document.getElementById('total-savings').innerText = `₹${total.toLocaleString('en-IN')}`;
+            document.getElementById('ledger-list').innerHTML = flowState.savings.map(s => `
+                <div class="flex justify-between py-2 text-[8px] text-zinc-600 border-b border-[#111] pr-2">
+                    <span>+${s.amount}</span><span>${s.date}</span>
+                </div>`).join('');
+
+            const quotes = ["Execution > Thinking.", "Focus is a currency.", "Stay precise.", "Zero errors."];
+            document.getElementById('quote-display').innerText = `"${quotes[flowState.selectedDate % quotes.length]}"`;
+        }
+
+        setInterval(() => {
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('en-GB');
+        }, 1000);
+
+        initCalendar();
+        render();
+        selectDate(new Date().getDate());
+    </script>
+</body>
+
+</html>
