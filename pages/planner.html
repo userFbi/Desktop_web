@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>TP // Tactical Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@900&family=JetBrains+Mono:wght@300;500&display=swap");
+
+    body {
+      font-family: "JetBrains Mono", monospace;
+      background-color: #080808;
+      color: #fff;
+      padding: 2rem;
+    }
+
+    .tp-logo-shield {
+      font-family: "Inter";
+      font-weight: 900;
+      background: linear-gradient(180deg, #fff 0%, #b3a577 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -2px;
+    }
+
+    .planner-container {
+      display: grid;
+      grid-template-columns: 80px repeat(7, 1fr);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .header-cell {
+      padding: 1.5rem 0.5rem;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 900;
+      color: #b3a577;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .slot {
+      height: 50px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .slot textarea {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #666;
+      font-size: 10px;
+      padding: 8px;
+      resize: none;
+    }
+
+    .slot textarea:focus {
+      color: #fff;
+      background: rgba(179, 165, 119, 0.03);
+    }
+
+    .current-hour {
+      background: rgba(179, 165, 119, 0.08) !important;
+      border-left: 2px solid #b3a577;
+    }
+
+    .time-label {
+      font-size: 9px;
+      color: #444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0d0d0d;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="flex justify-between items-center mb-12 no-print">
+    <div class="flex items-center gap-6">
+
+      <div> <a href="/index.html"
+          class="text-[10px] font-bold text-zinc-500 hover:text-white uppercase tracking-widest flex items-center gap-2">
+          <i data-lucide="arrow-left" class="w-3 h-3"></i> Dashboard
+        </a>
+      </div>
+    </div>
+
+    <div class="flex gap-8">
+      <button onclick="clearPlanner()"
+        class="text-[10px] font-bold text-red-900 hover:text-red-500 uppercase tracking-widest transition">
+        Wipe_Schedule
+      </button>
+
+    </div>
+  </nav>
+  <div class="planner-container" id="grid">
+    <div class="header-cell bg-[#0d0d0d]">UTC</div>
+    <div class="header-cell">MON</div>
+    <div class="header-cell">TUE</div>
+    <div class="header-cell">WED</div>
+    <div class="header-cell">THU</div>
+    <div class="header-cell">FRI</div>
+    <div class="header-cell">SAT</div>
+    <div class="header-cell">SUN</div>
+  </div>
+  <script>
+    const hours = [
+      "00:00",
+      "01:00",
+      "02:00",
+      "03:00",
+      "04:00",
+      "05:00",
+      "06:00",
+      "07:00",
+      "08:00",
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "13:00",
+      "14:00",
+      "15:00",
+      "16:00",
+      "17:00",
+      "18:00",
+      "19:00",
+      "20:00",
+      "21:00",
+      "22:00",
+      "23:00",
+      "24:00",
+    ];
+    const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    const grid = document.getElementById("grid");
+    const curH = new Date().getHours();
+
+    hours.forEach((h) => {
+      const hInt = parseInt(h);
+      const label = document.createElement("div");
+      label.className = `time-label ${hInt === curH ? "text-[#b3a577]" : ""}`;
+      label.innerText = h;
+      grid.appendChild(label);
+      days.forEach((d) => {
+        const id = `tp-${d}-${hInt}`;
+        const div = document.createElement("div");
+        div.className = `slot ${hInt === curH ? "current-hour" : ""}`;
+        div.innerHTML = `<textarea id="${id}" oninput="localStorage.setItem('${id}', this.value)" spellcheck="false" placeholder="..."></textarea>`;
+        grid.appendChild(div);
+      });
+    });
+
+    const dummy = {
+      "tp-mon-9": "React Architecture Refactor",
+      "tp-mon-11": "Node.js API Debugging",
+      "tp-tue-10": "MUI Theme Polish",
+      "tp-wed-14": "Interview Prep: Hooks",
+      "tp-thu-9": "Database Optimization",
+      "tp-fri-16": "FocusOS Deployment",
+    };
+    window.onload = () => {
+      lucide.createIcons();
+      const tas = document.querySelectorAll("textarea");
+      const hasData = Array.from(tas).some((t) => localStorage.getItem(t.id));
+      tas.forEach((t) => {
+        if (!hasData && dummy[t.id]) {
+          t.value = dummy[t.id];
+          localStorage.setItem(t.id, dummy[t.id]);
+        } else t.value = localStorage.getItem(t.id) || "";
+      });
+    };
+    function clearPlanner() {
+      if (confirm("Wipe all data?")) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+  </script>
+</body>
+
+</html>

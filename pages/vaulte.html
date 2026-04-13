@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeyVault // FocusOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@900&family=JetBrains+Mono:wght@100;400;800&display=swap");
+
+    :root {
+      --bg: #050505;
+      --accent: #b3a577;
+      --panel: #0d0d0d;
+      --border: #151515;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: #fff;
+      font-family: "JetBrains Mono", monospace;
+      padding: 3rem;
+      min-height: 100vh;
+    }
+
+    .vault-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+      margin-top: 3rem;
+    }
+
+    .key-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+      position: relative;
+    }
+
+    .key-card:hover {
+      border-color: var(--accent);
+      background: #0f0f0f;
+    }
+
+    .pass-display {
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em;
+    }
+
+    .copy-btn {
+      transition: 0.2s;
+      opacity: 0.4;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    .search-bar {
+      background: #0a0a0a;
+      border: 1px solid #151515;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .search-bar:focus {
+      border-color: var(--accent);
+    }
+
+    /* Utility classes for the password field */
+    .hidden-pass {
+      -webkit-text-security: disc;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="flex justify-between items-end border-b border-[#151515] pb-8">
+    <div>
+      <a href="/index.html"
+        class="text-[9px] text-[#b3a577] tracking-[0.4em] uppercase hover:tracking-[0.6em] transition-all duration-500 block mb-3">
+        << Return_to_Core </a>
+          <h1 class="text-4xl font-extrabold italic tracking-tighter uppercase font-inter leading-none">
+            Key<span class="text-[#b3a577]">Vault</span> <span class="text-[#151515]">//</span>
+          </h1>
+    </div>
+
+    <div class="flex gap-4">
+      <input type="text" id="vaultSearch" oninput="renderVault()" placeholder="FILTER_IDENTITY..."
+        class="search-bar px-6 py-3 text-[10px] tracking-[0.2em] w-64 text-zinc-400">
+      <button onclick="addNewKey()"
+        class="bg-[#b3a577] text-black px-6 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-white transition-all">
+        + New_Entry
+      </button>
+    </div>
+  </header>
+
+  <main id="vaultGrid" class="vault-grid">
+  </main>
+
+  <footer class="mt-24 pt-8 border-t border-[#151515] flex justify-between items-center">
+    <p class="text-[9px] text-zinc-700 font-mono tracking-widest">ENCRYPTION: AES-LOCAL-STORAGE</p>
+    <p id="vaultStatus" class="text-[9px] text-zinc-800 font-mono tracking-[0.4em] uppercase">// Terminal_Ready //</p>
+  </footer>
+
+  <script>
+    // Initial Dummy Data if Storage is empty
+    const defaultVault = [
+      { id: 1, service: "GitHub_Personal", identity: "dev_surat_2026", key: "ghp_secure_token_99", type: "SECURE" },
+      { id: 2, service: "Google_Main", identity: "admin@focusos.net", key: "P@ssw0rdFocus1", type: "SECURE" }
+    ];
+
+    let vaultData = JSON.parse(localStorage.getItem('tp_vault_keys')) || defaultVault;
+
+    function saveVault() {
+      localStorage.setItem('tp_vault_keys', JSON.stringify(vaultData));
+      renderVault();
+    }
+
+    function renderVault() {
+      const grid = document.getElementById('vaultGrid');
+      const query = document.getElementById('vaultSearch').value.toLowerCase();
+      grid.innerHTML = '';
+
+      const filtered = vaultData.filter(item =>
+        item.service.toLowerCase().includes(query) ||
+        item.identity.toLowerCase().includes(query)
+      );
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'key-card group';
+        card.innerHTML = `
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <p class="text-[8px] text-zinc-600 uppercase tracking-widest">Service_Provider</p>
+                            <h2 class="text-lg font-bold italic tracking-tighter group-hover:text-[#b3a577]">${item.service}</h2>
+                        </div>
+                        <button onclick="deleteKey(${item.id})" class="text-zinc-800 hover:text-red-500 transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-[8px] text-zinc-600 uppercase mb-1">Identity</p>
+                            <div class="flex justify-between items-center bg-[#050505] p-3 border border-white/5">
+                                <span class="text-xs text-zinc-400">${item.identity}</span>
+                                <button onclick="copyToClipboard('${item.identity}')" class="copy-btn"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-[8px] text-zinc-600 uppercase mb-1">Access_Key</p>
+                            <div class="flex justify-between items-center bg-[#050505] p-3 border border-white/5">
+                                <span id="pass-${item.id}" class="text-xs pass-display tracking-widest hidden-pass">${item.key}</span>
+                                <div class="flex gap-3">
+                                    <button onclick="togglePass(${item.id})" class="copy-btn"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+                                    <button onclick="copyToClipboard('${item.key}')" class="copy-btn"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-white/5 flex justify-between items-center">
+                        <span class="text-[8px] text-zinc-700 uppercase">Status_Check</span>
+                        <span class="text-[8px] px-2 py-0.5 ${item.type === 'SECURE' ? 'bg-green-900/20 text-green-500' : 'bg-yellow-900/20 text-yellow-500'} rounded-full font-bold uppercase">${item.type}</span>
+                    </div>
+                `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    // --- Core Functions ---
+
+    function addNewKey() {
+      const service = prompt("Enter Service Name:");
+      const identity = prompt("Enter Username/Email:");
+      const key = prompt("Enter Password:");
+
+      if (service && identity && key) {
+        const newEntry = {
+          id: Date.now(),
+          service,
+          identity,
+          key,
+          type: "SECURE"
+        };
+        vaultData.push(newEntry);
+        saveVault();
+        statusNotify("ENTRY_ADDED");
+      }
+    }
+
+    function deleteKey(id) {
+      if (confirm("Confirm Deletion?")) {
+        vaultData = vaultData.filter(item => item.id !== id);
+        saveVault();
+        statusNotify("ENTRY_REMOVED");
+      }
+    }
+
+    function togglePass(id) {
+      const el = document.getElementById(`pass-${id}`);
+      el.classList.toggle('hidden-pass');
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text);
+      statusNotify("DATA_COPIED_TO_CLIPBOARD");
+    }
+
+    function statusNotify(msg) {
+      const status = document.getElementById('vaultStatus');
+      status.innerText = `// ${msg} //`;
+      status.style.color = '#b3a577';
+      setTimeout(() => {
+        status.innerText = '// Terminal_Ready //';
+        status.style.color = '';
+      }, 2000);
+    }
+
+    // Initialize
+    renderVault();
+  </script>
+</body>
+
+</html>
